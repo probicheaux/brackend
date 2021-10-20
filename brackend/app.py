@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
 
 @app.route("/api/hello/", methods=["GET"])
 def hello():
-    return "Hello"
+    return jsonify(token="ya mum")
 
 
 if __name__ == "__main__":
