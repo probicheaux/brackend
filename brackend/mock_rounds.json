@@ -1,0 +1,191 @@
+{
+  "winners": [
+    {
+      "title": "Winner's Semifinals",
+      "seeds": [
+        {
+          "id": 1,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Spark",
+              "game": 3
+            },
+            {
+              "name": "Traplord",
+              "game": 0
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Nickemwit",
+              "game": 2
+            },
+            {
+              "name": "Umarth",
+              "game": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Winner's Finals",
+      "seeds": [
+        {
+          "id": 3,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Spark",
+              "game": 3
+            },
+            {
+              "name": "Umarth",
+              "game": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Grand Finals",
+      "seeds": [
+        {
+          "id": 4,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Spark",
+              "game": 3
+            },
+            {
+              "name": "Umarth",
+              "game": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "losers": [
+    {
+      "title": "Loser's Round One",
+      "seeds": [
+        {
+          "id": 1,
+          "losers": true,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Notorious",
+              "game": 3
+            },
+            {
+              "name": "Typhoon",
+              "game": 2
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "losers": true,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "soccermom69",
+              "game": 3
+            },
+            {
+              "name": "Snap",
+              "game": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Loser's Quarterfinals",
+      "seeds": [
+        {
+          "id": 3,
+          "losers": true,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Nickemwit",
+              "game": 3
+            },
+            {
+              "name": "Notorious",
+              "game": 0
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "losers": true,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Traplord",
+              "game": 1
+            },
+            {
+              "name": "soccermom69",
+              "game": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Loser's Semifinals",
+      "seeds": [
+        {
+          "id": 5,
+          "losers": true,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Nickemwit",
+              "game": 3
+            },
+            {
+              "name": "soccermom69",
+              "game": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Loser's Finals",
+      "seeds": [
+        {
+          "id": 6,
+          "losers": true,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Umarth",
+              "game": 3
+            },
+            {
+              "name": "Nickemwit",
+              "game": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
