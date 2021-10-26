@@ -1,7 +1,7 @@
 {
   "winners": [
     {
-      "title": "Winner's Semifinals",
+      "title": "Winner's round 1",
       "seeds": [
         {
           "id": 1,
@@ -32,14 +32,104 @@
               "game": 3
             }
           ]
+        },
+        {
+          "id": 3,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Joemama",
+              "game": 3
+            },
+            {
+              "name": "Butts McGee",
+              "game": 0
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "NONK MONK WONK",
+              "game": 2
+            },
+            {
+              "name": "umee",
+              "game": 3
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Spark",
+              "game": 3
+            },
+            {
+              "name": "Traplord",
+              "game": 0
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Nickemwit",
+              "game": 2
+            },
+            {
+              "name": "Umarth",
+              "game": 3
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Joemama",
+              "game": 3
+            },
+            {
+              "name": "Butts McGee",
+              "game": 0
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "NONK MONK WONK",
+              "game": 2
+            },
+            {
+              "name": "umee",
+              "game": 3
+            }
+          ]
         }
       ]
     },
     {
-      "title": "Winner's Finals",
+      "title": "Winner's Semifinals",
       "seeds": [
         {
-          "id": 3,
+          "id": 5,
           "losers": false,
           "date": "Wed Oct 20 2021",
           "teams": [
@@ -52,14 +142,24 @@
               "game": 0
             }
           ]
-        }
-      ]
-    },
-    {
-      "title": "Grand Finals",
-      "seeds": [
+        },
         {
-          "id": 4,
+          "id": 6,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Joemama",
+              "game": 3
+            },
+            {
+              "name": "NONK MONK WONK",
+              "game": 0
+            }
+          ]
+        },
+        {
+          "id": 5,
           "losers": false,
           "date": "Wed Oct 20 2021",
           "teams": [
@@ -70,6 +170,76 @@
             {
               "name": "Umarth",
               "game": 0
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Joemama",
+              "game": 3
+            },
+            {
+              "name": "NONK MONK WONK",
+              "game": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Winner's Finals",
+      "seeds": [
+        {
+          "id": 7,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Spark",
+              "game": 0
+            },
+            {
+              "name": "Joemama",
+              "game": 3
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "Spark",
+              "game": 0
+            },
+            {
+              "name": "Joemama",
+              "game": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Grands",
+      "seeds": [
+        {
+          "id": 8,
+          "losers": false,
+          "date": "Wed Oct 20 2021",
+          "teams": [
+            {
+              "name": "UMEE",
+              "game": 0
+            },
+            {
+              "name": "Joemama",
+              "game": 3
             }
           ]
         }
