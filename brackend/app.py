@@ -39,7 +39,7 @@ def login():
 def tournament():
     json = request.get_json()
     tourney_id = json.get("tourney_id")
-    app.logger.info(f"Got post at /apit/tournament/")
+    app.logger.info(f"Got post at /api/tournament/")
     app.logger.info(f"tourney_id: {tourney_id}")
 
     return jsonify(rounds=mock_rounds())
