@@ -1,9 +1,9 @@
 import json
 import logging
+from os.path import dirname, join
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from os.path import dirname, join
 
 app = Flask(__name__)
 path = dirname(__file__)
@@ -26,9 +26,9 @@ def hello():
 
 @app.route("/api/login/", methods=["POST"])
 def login():
-    json = request.get_json()
-    username = json.get("username")
-    password = json.get("password")
+    response_json = request.get_json()
+    username = response_json.get("username")
+    password = response_json.get("password")
     app.logger.info("Got post at /api/login/")
     app.logger.info(f"Username: {username}")
     app.logger.info(f"Password: {password}")
@@ -37,8 +37,8 @@ def login():
 
 @app.route("/api/tournament/", methods=["POST"])
 def tournament():
-    json = request.get_json()
-    tourney_id = json.get("tourney_id")
+    request_json = request.get_json()
+    tourney_id = request_json.get("tourney_id")
     app.logger.info(f"Got post at /api/tournament/")
     app.logger.info(f"tourney_id: {tourney_id}")
 
