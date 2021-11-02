@@ -18,14 +18,6 @@ if __name__ != "__main__":
 # Brackets are arranged in a certain way, and we use this function to return a list of numbers that show where each value should
 # be rearranged to.
 def generateSeedPos(n):
-    if n == 1:
-        return [0]
-    if n == 2:
-        return [0,1]
-    if n == 4:
-        return [0,3,1,2]
-    if n == 8:
-        return [0,7,3,4,1,6,2,5]
     r = list(range(n))
     s = 1
     while s < n//2:
@@ -75,16 +67,35 @@ def tournament():
 def makeBracketFromEntrants():
     request_json = request.get_json()
     players = request_json.get("players")
-    baseNum = 1
-    while baseNum * 2 <= len(players):
-        baseNum = baseNum * 2
+    base_num = 1
+    while base_num * 2 <= len(players):
+        base_num = base_num * 2
+    seg = base_num-(len(players)-base_num)
+    round_two_players = players[:seg]
+    round_one_players = players[seg:]
     date = request_json.get("date")
     if date == None:
         date = datetime.today().strftime('%Y-%m-%d')
-    iDee = 0
+        
     matches = {"winners": [{"title": "Winner's Round 1", "seeds": []}, {"title": "Winner's Round 2", "seeds": []}], "losers": []}
-    roundOne = [{"id": -1, "losers": False, "date": date, "teams": []} for i in range(baseNum//2)]
-    matches["winners"][0]["seeds"] = roundOne
+    
+    round_one = [{"id": i, "losers": False, "date": date, "teams": [{"name": "", "game": -1}, {"name": "", "game": -1}]} for i in range(base_num//2)]
+    pos = generateSeedPos(base_num//2)
+    b = 0
+    while len(round_one_players) > 0:
+        place = pos.index(b)
+        round_one[place]["teams"][0]["name"] = round_one_players.pop(len(round_one_players)//2 - 1)
+        round_one[place]["teams"][1]["name"] = round_one_players.pop(len(round_one_players)//2)
+        b += 1
+    matches["winners"][0]["seeds"] = round_one
+
+    round_two = [{"id": i, "losers": False, "date": date, "teams": [{"name": "", "game": -1}, {"name": "", "game": -1}]} for i in range(base_num//2)]
+    pos2 = generateSeedPos(base_num)
+    for p in range(len(round_two_players)):
+        place2 = pos2.index(p)
+        round_two[place2 // 2]["teams"][place2 % 2]["name"] = round_two_players[p]
+    matches["winners"][1]["seeds"] = round_two
+    
     return jsonify(matches)
 
 
