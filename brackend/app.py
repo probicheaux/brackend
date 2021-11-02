@@ -121,7 +121,7 @@ def makeBracketFromEntrants():
         round_two[place2 // 2]["teams"][place2 % 2]["name"] = round_two_players[p]
     matches["winners"][1]["seeds"] = round_two
 
-    return jsonify(matches)
+    return jsonify(tourney=matches)
 
 
 if __name__ == "__main__":
