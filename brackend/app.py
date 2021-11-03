@@ -5,6 +5,8 @@ from os.path import dirname, join
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+import math
+
 from datetime import datetime
 
 app = Flask(__name__)
@@ -67,9 +69,10 @@ def tournament():
 def makeBracketFromEntrants():
     request_json = request.get_json()
     players = request_json.get("players")
-    base_num = 1
-    while base_num * 2 <= len(players):
-        base_num = base_num * 2
+    #base_num = 1
+    #while base_num * 2 <= len(players):
+    #    base_num = base_num * 2
+    base_num = 2**math.floor(math.log(len(players), 2))
     seg = base_num-(len(players)-base_num)
     round_two_players = players[:seg]
     round_one_players = players[seg:]
