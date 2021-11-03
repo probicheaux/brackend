@@ -67,6 +67,7 @@ def tournament():
 @app.route("/api/makeBracketFromEntrants/", methods=["POST"])
 def makeBracketFromEntrants():
     request_json = request.get_json()
+    app.logger.info(f"Got post at /api/makeBracketFromEntrants/")
     players = request_json.get("players")
     base_num = 1
     while base_num * 2 <= len(players):
