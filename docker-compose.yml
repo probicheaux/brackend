@@ -10,3 +10,24 @@ services:
     command: gunicorn --log-level info -w 3 -b 0.0.0.0:8000 brackend:app
     volumes:
       - .:/code/
+  db:
+    image: postgres
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  django:
+    build: .
+    container_name: brackend
+    restart: always
+    command: python orm/manage.py runserver 0.0.0.0:7000
+    volumes:
+      - .:/code
+    ports:
+      - "7000:7000"
+    depends_on:
+      - db
+volumes:
+  postgres_db:
