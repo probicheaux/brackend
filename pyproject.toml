@@ -10,6 +10,7 @@ requests = "^2.26.0"
 Flask = "^2.0.2"
 gunicorn = "^20.1.0"
 Flask-Cors = "^3.0.10"
+SQLAlchemy = "^1.4.27"
 
 [tool.poetry.dev-dependencies]
 black = "^21.9b0"
