@@ -3,6 +3,7 @@ version: '3'
 services:
   flask_app:
     container_name: brackend
+    image: brackend:latest
     restart: always
     build: .
     ports:
@@ -21,5 +22,10 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5438:5432"
+  brackend:
+    image: brackend:latest
+    command: python brackend/db/models.py
+    volumes:
+      - .:/code/
 volumes:
   postgres_db:
