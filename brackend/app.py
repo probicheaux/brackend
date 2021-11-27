@@ -6,6 +6,7 @@ from os.path import dirname, join
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from brackend.tasks.tasks import save_new_user, save_new_tournament, get_user_ids, get_tournament_ids
 
 app = Flask(__name__)
 path = dirname(__file__)
@@ -43,6 +44,28 @@ def mock_rounds():
 def hello():
     return jsonify(token="ya mum")
 
+
+@app.route("/api/user/register/", methods=["POST"])
+def register_user():
+    response_json = request.get_json()
+    username = response_json.get("username")
+    save_new_user.send(username)
+    return jsonify(success=True)
+
+@app.route("/api/tournament/register/", methods=["POST"])
+def register_tournament():
+    response_json = request.get_json()
+    name = response_json.get("name")
+    save_new_tournament.send(name)
+    return jsonify(success=True)
+
+@app.route("/api/user/list/", methods=["GET"])
+def get_users():
+    return jsonify(get_user_ids())
+
+@app.route("/api/tournament/list/", methods=["GET"])
+def get_tournaments():
+    return jsonify(get_tournament_ids())
 
 @app.route("/api/login/", methods=["POST"])
 def login():
