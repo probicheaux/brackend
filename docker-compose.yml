@@ -1,6 +1,15 @@
 version: '3'
 
 services:
+  redis:
+    image: redis
+  brackend:
+    image: brackend:latest
+    command: dramatiq brackend.tasks.tasks
+    volumes:
+      - .:/code/
+    depends_on:
+      - redis
   flask_app:
     container_name: brackend
     image: brackend:latest
@@ -11,6 +20,8 @@ services:
     command: gunicorn --log-level info -w 3 -b 0.0.0.0:8000 brackend:app
     volumes:
       - .:/code/
+    depends_on:
+      - brackend
   db:
     image: postgres
     volumes:
@@ -22,10 +33,5 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5438:5432"
-  brackend:
-    image: brackend:latest
-    command: python brackend/db/models.py
-    volumes:
-      - .:/code/
 volumes:
   postgres_db:
