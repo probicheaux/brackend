@@ -12,6 +12,7 @@ gunicorn = "^20.1.0"
 Flask-Cors = "^3.0.10"
 SQLAlchemy = "^1.4.27"
 psycopg2 = "^2.9.2"
+dramatiq = {extras = ["redis", "watch"], version = "^1.12.0"}
 
 [tool.poetry.dev-dependencies]
 black = "^21.9b0"
