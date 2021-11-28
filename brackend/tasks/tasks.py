@@ -9,10 +9,10 @@ dramatiq.set_broker(redis_broker)
 
 
 @dramatiq.actor
-def save_new_user(username):
+def save_new_user_email(username, password, email):
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
-        new_user = User(username=username)
+        new_user = User(username=username, password=password, email=email, verified=False)
         session.add(new_user)
         session.commit()
 

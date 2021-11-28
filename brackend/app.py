@@ -44,11 +44,13 @@ def mock_rounds():
 def hello():
     return jsonify(success=True)
 
-@app.route("/api/user/register/", methods=["POST"])
+@app.route("/api/user/registerFromEmail/", methods=["POST"])
 def register_user():
     response_json = request.get_json()
     username = response_json.get("username")
-    save_new_user.send(username)
+    password = response_json.get("password")
+    email = response_json.get("email")
+    save_new_user_email.send(username, password, email)
     return jsonify(success=True)
 
 @app.route("/api/user/login/", methods=["POST"])

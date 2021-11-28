@@ -1,5 +1,5 @@
 """Module that defines/creates/holds ORMs for the database."""
-from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -11,6 +11,9 @@ class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True)
     username = Column(String(255), nullable=False)
+    password = Column(String(255), nullable=True)
+    email = Column(String(255), nullable=True)
+    verified = Column(Boolean, default=False)
     tournaments = relationship("Tournament", secondary="user_tournament", back_populates="users")
 
     def __repr__(self):
