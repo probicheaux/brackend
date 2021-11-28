@@ -42,8 +42,7 @@ def mock_rounds():
 
 @app.route("/api/hello/", methods=["GET"])
 def hello():
-    return jsonify(token="ya mum")
-
+    return jsonify(success=True)
 
 @app.route("/api/user/register/", methods=["POST"])
 def register_user():
@@ -51,6 +50,23 @@ def register_user():
     username = response_json.get("username")
     save_new_user.send(username)
     return jsonify(success=True)
+
+@app.route("/api/user/login/", methods=["POST"])
+def login():
+    response_json = request.get_json()
+    username = response_json.get("username")
+    password = response_json.get("password")
+    app.logger.info("Got POST at /api/login/")
+    return jsonify(token="truthy token: u: " + username + " p: " + password)
+
+@app.route("/api/user/logout/", methods=["POST"])
+def login():
+    response_json = request.get_json()
+    username = response_json.get("username")
+    password = response_json.get("password")
+    app.logger.info("Got POST at /api/login/")
+    return jsonify(token="truthy token: u: " + username + " p: " + password)
+
 
 @app.route("/api/tournament/register/", methods=["POST"])
 def register_tournament():
@@ -67,16 +83,6 @@ def get_users():
 def get_tournaments():
     return jsonify(get_tournament_ids())
 
-@app.route("/api/login/", methods=["POST"])
-def login():
-    response_json = request.get_json()
-    username = response_json.get("username")
-    password = response_json.get("password")
-    app.logger.info("Got post at /api/login/")
-    app.logger.info(f"Username: {username}")
-    app.logger.info(f"Password: {password}")
-    return jsonify(token="truthy token: u: " + username + " p: " + password)
-
 
 @app.route("/api/tournament/", methods=["POST"])
 def tournament():
@@ -88,7 +94,7 @@ def tournament():
     return jsonify(rounds=mock_rounds())
 
 
-@app.route("/api/makeBracketFromEntrants/", methods=["POST"])
+@app.route("/api/tournament/makeBracketFromEntrants/", methods=["POST"])
 def makeBracketFromEntrants():
     request_json = request.get_json()
     app.logger.info(f"Got post at /api/makeBracketFromEntrants/")
