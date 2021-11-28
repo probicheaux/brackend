@@ -3,19 +3,16 @@ import os
 from pathlib import Path
 
 import firebase_admin
-from dotenv import load_dotenv
 
 from brackend.app import app
+from brackend.util import ROOT_PATH
+from brackend.db.models import clear_models
 
 gunicorn_logger = logging.getLogger("gunicorn.info")
 
-ROOT_PATH = Path(__file__).parent
-load_dotenv(ROOT_PATH / ".env")
-SECRET_KEY = os.environ["SECRET_KEY"]
-
 
 def init_firebase():
-    firebase_credentials_path = ROOT_PATH / "firebase-credentials.json"
+    firebase_credentials_path = str(ROOT_PATH / "firebase-credentials.json")
     credentials = firebase_admin.credentials.Certificate(firebase_credentials_path)
     default_app = firebase_admin.initialize_app(credentials)
     return default_app
