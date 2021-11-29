@@ -1,6 +1,6 @@
 import dramatiq
-import yagmail
 from dramatiq.brokers.redis import RedisBroker
+from firebase_admin.auth import create_user, get_user
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -12,7 +12,6 @@ from brackend.tasks.auth import (
     generate_verification_email,
 )
 from brackend.util import BrackendException, send_email
-from firebase_admin.auth import create_user, get_user
 
 redis_broker = RedisBroker(host="redis")
 dramatiq.set_broker(redis_broker)
@@ -24,7 +23,11 @@ def save_new_user_email(username, password, email_address):
     user = create_user(email=email_address)
     with Session(engine) as session:
         new_user = User(
-            username=username, password=password, email=email_address, firebase_id=user.uid, verified=False
+            username=username,
+            password=password,
+            email=email_address,
+            firebase_id=user.uid,
+            verified=False,
         )
         session.add(new_user)
         session.commit()

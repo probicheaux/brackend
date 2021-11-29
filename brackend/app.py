@@ -6,8 +6,15 @@ from os.path import dirname, join
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from brackend.tasks.tasks import save_new_user_email, save_new_tournament, get_user_ids, get_tournament_ids, login_user
+
 from brackend.tasks.auth import get_password_and_salt
+from brackend.tasks.tasks import (
+    get_tournament_ids,
+    get_user_ids,
+    login_user,
+    save_new_tournament,
+    save_new_user_email,
+)
 from brackend.util import BrackendException
 
 app = Flask(__name__)
@@ -46,6 +53,7 @@ def mock_rounds():
 def hello():
     return jsonify(success=True)
 
+
 @app.route("/api/user/register-from-email/", methods=["POST"])
 def register_user():
     response_json = request.get_json()
@@ -55,6 +63,7 @@ def register_user():
     password = get_password_and_salt(password)
     save_new_user_email.send(username, password, email)
     return jsonify(success=True)
+
 
 @app.route("/api/user/login/", methods=["POST"])
 def login():
@@ -85,9 +94,11 @@ def register_tournament():
     save_new_tournament.send(name)
     return jsonify(success=True)
 
+
 @app.route("/api/user/list/", methods=["GET"])
 def get_users():
     return jsonify(get_user_ids())
+
 
 @app.route("/api/tournament/list/", methods=["GET"])
 def get_tournaments():

@@ -3,6 +3,17 @@ version: '3'
 services:
   redis:
     image: redis
+  db:
+    image: postgres
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - .:/code/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5438:5432"
   brackend:
     image: brackend:latest
     command: dramatiq brackend.tasks.tasks
@@ -10,6 +21,7 @@ services:
       - .:/code/
     depends_on:
       - redis
+      - db
   flask_app:
     container_name: brackend
     image: brackend:latest
@@ -22,16 +34,5 @@ services:
       - .:/code/
     depends_on:
       - brackend
-  db:
-    image: postgres
-    volumes:
-      - postgres_db:/var/lib/postgresql/data
-      - .:/code/
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - "5438:5432"
 volumes:
   postgres_db:
