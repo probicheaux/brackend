@@ -38,5 +38,5 @@ def generate_verification_email(email_address):
     return body
 
 def create_user_firebase(email_address):
-    create_user(email=email_address)
+    return create_user(email=email_address)
 

@@ -52,7 +52,7 @@ def register_user():
     username = response_json.get("username")
     password = response_json.get("password")
     email = response_json.get("email")
-    password  = get_password_and_salt(password)
+    password = get_password_and_salt(password)
     save_new_user_email.send(username, password, email)
     return jsonify(success=True)
 
@@ -64,7 +64,8 @@ def login():
     try:
         jwt = login_user(username, password)
         return jsonify(success=True, token=jwt)
-    except BrackendException:
+    except BrackendException as error:
+        app.log_exception(error)
         return jsonify(success=False, token=None)
 
 

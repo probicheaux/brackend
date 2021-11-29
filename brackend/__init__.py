@@ -6,7 +6,6 @@ import firebase_admin
 
 from brackend.app import app
 from brackend.util import ROOT_PATH
-from brackend.db.models import clear_models
 
 gunicorn_logger = logging.getLogger("gunicorn.info")
 

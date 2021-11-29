@@ -18,6 +18,7 @@ class User(Base):
     email = Column(String(255), nullable=True)
     verified = Column(Boolean, default=False)
     tournaments = relationship("Tournament", secondary="user_tournament", back_populates="users")
+    firebase_id = Column(String(255), nullable=False)
 
     def __repr__(self):
         return f"User(id={self.id}, username={self.username})"
