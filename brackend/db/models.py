@@ -1,9 +1,12 @@
 """Module that defines/creates/holds ORMs for the database."""
-from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, relationship
+from brackend.util import BrackendException
 
 Base = declarative_base()
 
+class NotFoundException(BrackendException):
+    pass
 
 class User(Base):
     """User table."""
@@ -11,7 +14,11 @@ class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True)
     username = Column(String(255), nullable=False)
+    password = Column(String(255), nullable=True)
+    email = Column(String(255), nullable=True)
+    verified = Column(Boolean, default=False)
     tournaments = relationship("Tournament", secondary="user_tournament", back_populates="users")
+    firebase_id = Column(String(255), nullable=False)
 
     def __repr__(self):
         return f"User(id={self.id}, username={self.username})"
@@ -53,8 +60,9 @@ class EngineGetter:
         return cls._engine
 
 
-def create_models():
+def clear_models():
     engine = EngineGetter.get_or_create_engine()
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
 

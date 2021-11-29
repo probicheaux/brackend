@@ -13,6 +13,11 @@ Flask-Cors = "^3.0.10"
 SQLAlchemy = "^1.4.27"
 psycopg2 = "^2.9.2"
 dramatiq = {extras = ["redis", "watch"], version = "^1.12.0"}
+python-dotenv = "^0.19.2"
+PyJWT = "^2.3.0"
+firebase-admin = "^5.1.0"
+bcrypt = "^3.2.0"
+yagmail = "^0.14.260"
 
 [tool.poetry.dev-dependencies]
 black = "^21.9b0"
