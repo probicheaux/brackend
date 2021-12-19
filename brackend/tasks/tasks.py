@@ -11,7 +11,7 @@ from brackend.tasks.auth import (
     encode_auth_token,
     generate_verification_email,
 )
-from brackend.util import BrackendException, send_email
+from brackend.util import BrackendException
 
 redis_broker = RedisBroker(host="redis")
 dramatiq.set_broker(redis_broker)
@@ -34,7 +34,7 @@ def save_new_user_email(username, password, email_address):
 
     verification_email = generate_verification_email(email_address)
     subject = "Verify your account for smus bracket"
-    send_email(email_address, subject, verification_email)
+    # send_email(email_address, subject, verification_email)
 
 
 def login_user(username, password):
@@ -72,6 +72,7 @@ def save_new_tournament(name):
         new_tourny = Tournament(name=name)
         session.add(new_tourny)
         session.commit()
+        return new_tourny
 
 
 def get_user_ids():
@@ -86,3 +87,13 @@ def get_tournament_ids():
     with Session(engine) as session:
         users = session.query(Tournament).all()
         return [u.id for u in users]
+
+
+def get_tournament_by_id(id):
+    engine = EngineGetter.get_or_create_engine()
+    with Session(engine) as session:
+        tournament = session\
+            .query(Tournament)\
+            .filter(Tournament.id == id)\
+            .one_or_none()
+        return tournament
