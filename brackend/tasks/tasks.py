@@ -11,7 +11,7 @@ from brackend.tasks.auth import (
     encode_auth_token,
     generate_verification_email,
 )
-from brackend.util import BrackendException
+from brackend.util import BrackendException, send_email
 
 redis_broker = RedisBroker(host="redis")
 dramatiq.set_broker(redis_broker)
@@ -34,7 +34,7 @@ def save_new_user_email(username, password, email_address):
 
     verification_email = generate_verification_email(email_address)
     subject = "Verify your account for smus bracket"
-    # send_email(email_address, subject, verification_email)
+    send_email(email_address, subject, verification_email)
 
 
 def login_user(username, password):
