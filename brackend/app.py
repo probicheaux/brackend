@@ -17,9 +17,20 @@ from brackend.tasks.tasks import (
 )
 from brackend.util import BrackendException
 
+# App Blueprints: Blueprint for each resource
+from endpoints.tournaments.tournaments import tournament_bp
+
+
+def register_blueprints(app):
+    """
+        Register all blueprints for the app
+    """
+    app.register_blueprint(tournament_bp)
+
 app = Flask(__name__)
 path = dirname(__file__)
 CORS(app)
+register_blueprints(app)
 if __name__ != "__main__":
     gunicorn_logger = logging.getLogger("gunicorn.error")
     app.logger.handlers = gunicorn_logger.handlers
