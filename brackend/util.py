@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 ROOT_PATH = Path(__file__).parent.parent
 load_dotenv(str(ROOT_PATH / ".env"))
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ["SECRET_KEY"]
 YAGMAIL_CLIENT = yagmail.SMTP("smusbracket@gmail.com", oauth2_file=str(ROOT_PATH / "gmail-auth.json"))
 
 def send_email(address, subject, message):
