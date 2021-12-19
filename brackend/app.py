@@ -20,12 +20,12 @@ from brackend.util import BrackendException
 # App Blueprints: Blueprint for each resource
 from endpoints.tournaments.tournaments import tournament_bp
 
-
+api_prefix_v1 = "/api/v1"
 def register_blueprints(app):
     """
         Register all blueprints for the app
     """
-    app.register_blueprint(tournament_bp)
+    app.register_blueprint(tournament_bp, url_prefix=api_prefix_v1)
 
 app = Flask(__name__)
 path = dirname(__file__)
