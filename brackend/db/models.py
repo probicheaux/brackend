@@ -1,8 +1,7 @@
 """Module that defines/creates/holds ORMs for the database."""
+from brackend.util import BrackendException, DOCKER_POSTGRES_URL
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, relationship
-
-from brackend.util import BrackendException
 
 Base = declarative_base()
 
@@ -14,13 +13,13 @@ class NotFoundException(BrackendException):
 class User(Base):
     """User table."""
 
-    __tablename__ = "user"
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     username = Column(String(255), nullable=False)
     password = Column(String(255), nullable=True)
     email = Column(String(255), nullable=True)
     verified = Column(Boolean, default=False)
-    tournaments = relationship("Tournament", secondary="user_tournament", back_populates="users")
+    tournaments = relationship("Tournament", secondary="user_tournaments", back_populates="users")
     firebase_id = Column(String(255), nullable=False)
 
     def __repr__(self):
@@ -30,10 +29,10 @@ class User(Base):
 class Tournament(Base):
     """Tournament table."""
 
-    __tablename__ = "tournament"
+    __tablename__ = "tournaments"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
-    users = relationship("User", secondary="user_tournament", back_populates="tournaments")
+    users = relationship("User", secondary="user_tournaments", back_populates="tournaments")
 
     def __repr__(self):
         return f"Tournament(id={self.id}, name={self.name})"
@@ -42,10 +41,10 @@ class Tournament(Base):
 class UserTournament(Base):
     """Join table to keep track of which tournaments a user has and vice versa."""
 
-    __tablename__ = "user_tournament"
+    __tablename__ = "user_tournaments"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    tournament_id = Column(Integer, ForeignKey("tournament.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    tournament_id = Column(Integer, ForeignKey("tournaments.id"))
 
 
 class EngineGetter:
@@ -58,7 +57,7 @@ class EngineGetter:
         """Get a sql connection engine or return the extant one."""
         if cls._engine is None:
             cls._engine = create_engine(
-                "postgresql://postgres:postgres@db/brackend", echo=True, future=True
+                DOCKER_POSTGRES_URL, echo=True, future=True
             )
         return cls._engine
 

@@ -19,6 +19,7 @@ firebase-admin = "^5.1.0"
 bcrypt = "^3.2.0"
 yagmail = "^0.14.260"
 Flask_restful = "^0.3.9"
+alembic = "^1.7.5"
 
 [tool.poetry.dev-dependencies]
 black = "^21.9b0"
