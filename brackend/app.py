@@ -6,9 +6,17 @@ from os.path import dirname, join
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from brackend.tasks.tasks import save_new_user_email, save_new_tournament, get_user_ids, get_tournament_ids, login_user
-from brackend.tasks.auth import get_password_and_salt
-from brackend.util import BrackendException
+
+from brackend.tasks.auth import encode_auth_token, get_password_and_salt
+from brackend.tasks.tasks import (
+    get_tournament_ids,
+    get_user_ids,
+    login_user,
+    save_new_dummy_user,
+    save_new_tournament,
+    save_new_user_email,
+)
+from brackend.util import AUTHENTICATING, BrackendException
 
 app = Flask(__name__)
 path = dirname(__file__)
@@ -46,6 +54,7 @@ def mock_rounds():
 def hello():
     return jsonify(success=True)
 
+
 @app.route("/api/user/register-from-email/", methods=["POST"])
 def register_user():
     response_json = request.get_json()
@@ -56,6 +65,7 @@ def register_user():
     save_new_user_email.send(username, password, email)
     return jsonify(success=True)
 
+
 @app.route("/api/user/login/", methods=["POST"])
 def login():
     response_json = request.get_json()
@@ -65,8 +75,12 @@ def login():
         jwt = login_user(username, password)
         return jsonify(success=True, token=jwt)
     except BrackendException as error:
-        app.log_exception(error)
-        return jsonify(success=False, token=None)
+        if AUTHENTICATING:
+            app.log_exception(error)
+            return jsonify(success=False, token=None)
+
+        username, password = save_new_dummy_user()
+        jwt = login_user(username, password)
 
 
 @app.route("/api/user/logout/", methods=["POST"])
@@ -85,9 +99,11 @@ def register_tournament():
     save_new_tournament.send(name)
     return jsonify(success=True)
 
+
 @app.route("/api/user/list/", methods=["GET"])
 def get_users():
     return jsonify(get_user_ids())
+
 
 @app.route("/api/tournament/list/", methods=["GET"])
 def get_tournaments():
