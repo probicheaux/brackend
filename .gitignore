@@ -2,3 +2,5 @@
 **/.env
 **/gmail-auth.json
 **/__pycache__/
+dist/*
+secrets.7z
