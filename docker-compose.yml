@@ -29,7 +29,9 @@ services:
     build: .
     ports:
       - "8000:8000"
-    command: gunicorn --log-level info -w 3 -b 0.0.0.0:8000 brackend:app
+    command: ./flask-app.sh
+    environment:
+      - IS_DOCKER=1
     volumes:
       - .:/code/
     depends_on:

@@ -2,13 +2,18 @@ from logging.config import fileConfig
 
 from brackend.db.models import *
 from brackend.db.models import Base
+from brackend.util import DOCKER_POSTGRES_URL
 from sqlalchemy import engine_from_config, pool
+import os
 
 from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+is_docker = os.environ.get("IS_DOCKER", False)
 config = context.config
+if is_docker:
+    config.set_main_option("sqlalchemy.url", DOCKER_POSTGRES_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

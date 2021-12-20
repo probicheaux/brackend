@@ -1,5 +1,5 @@
 """Module that defines/creates/holds ORMs for the database."""
-from brackend.util import BrackendException
+from brackend.util import BrackendException, DOCKER_POSTGRES_URL
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -57,7 +57,7 @@ class EngineGetter:
         """Get a sql connection engine or return the extant one."""
         if cls._engine is None:
             cls._engine = create_engine(
-                "postgresql://postgres:postgres@db/brackend", echo=True, future=True
+                DOCKER_POSTGRES_URL, echo=True, future=True
             )
         return cls._engine
 
