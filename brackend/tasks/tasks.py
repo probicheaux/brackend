@@ -69,6 +69,7 @@ def login_user(username, password):
 def save_new_tournament(name):
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
+        session.expire_on_commit = False
         new_tourny = Tournament(name=name)
         session.add(new_tourny)
         session.commit()

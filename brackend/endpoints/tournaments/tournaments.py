@@ -20,7 +20,7 @@ class Tournaments(Resource):
         body = request.get_json()
         name = body.get("name")
         new_tourny = save_new_tournament(name)
-        return jsonify(new_tourny)
+        return jsonify(new_tourny.to_json())
 
 
 class TournamentDetails(Resource):
@@ -29,7 +29,7 @@ class TournamentDetails(Resource):
     """
     def get(self, tournament_id):
         tourny = get_tournament_by_id(tournament_id)
-        return jsonify(tourny)
+        return jsonify(tourny.to_json())
 
 
 tournament_api.add_resource(Tournaments, '/tournaments')
