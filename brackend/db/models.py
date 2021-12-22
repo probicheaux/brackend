@@ -2,18 +2,24 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, create_engine
-from sqlalchemy.orm import declarative_base, relationship
-
 from brackend.util import DOCKER_POSTGRES_URL, BrackendException
+from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, create_engine
+from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
 
-class ProgressEnum(enum.Enum):
-    not_started = 1
-    in_progress = 2
-    completed = 3
+class MatchProgress(enum.Enum):
+    not_started = enum.auto()
+    in_progress = enum.auto()
+    completed = enum.auto()
+
+
+class UserRole(enum.Enum):
+    player = enum.auto()
+    spectator = enum.auto()
+    organizer = enum.auto()
 
 
 class NotFoundException(BrackendException):
@@ -58,7 +64,7 @@ class UserTournament(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     tournament_id = Column(Integer, ForeignKey("tournaments.id"))
-    is_organizer = Column(Boolean, default=False)
+    role = Column(ENUM(UserRole), nullable=False)
 
 
 class Bracket(Base):
@@ -84,7 +90,7 @@ class Match(Base):
     id = Column(Integer, primary_key=True)
     round = Column(Integer, ForeignKey("rounds.id"))
     round_position = Column(Integer)
-    progress = Column(Enum(ProgressEnum))
+    progress = Column(Enum(MatchProgress), nullable=False)
     players = relationship("User", secondary="match_users", backref="matches")
 
 
