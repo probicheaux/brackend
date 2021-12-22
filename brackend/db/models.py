@@ -1,6 +1,6 @@
 """Module that defines/creates/holds ORMs for the database."""
-import datetime
 import enum
+from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, relationship
