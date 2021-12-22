@@ -37,6 +37,12 @@ class Tournament(Base):
     def __repr__(self):
         return f"Tournament(id={self.id}, name={self.name})"
 
+    def to_json(self):
+        return {
+            "name": self.name,
+            "id": self.id
+        }
+
 
 class UserTournament(Base):
     """Join table to keep track of which tournaments a user has and vice versa."""
