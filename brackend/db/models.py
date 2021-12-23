@@ -50,7 +50,7 @@ class Tournament(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     date = Column(DateTime, default=datetime.now)
-    users = relationship("User", secondary="user_tournaments", backref="tournaments")
+    users = relationship("User", secondary="user_tournaments", back_populates="tournaments")
     brackets = relationship("Bracket", backref="tournaments")
 
     def __repr__(self):
@@ -87,7 +87,7 @@ class Round(Base):
     __tablename__ = "rounds"
     id = Column(Integer, primary_key=True, autoincrement=False)
     name = Column(String(255), nullable=False)
-    bracket = Column(Integer, ForeignKey("tournaments.id"))
+    bracket = Column(Integer, ForeignKey("brackets.id"))
     matches = relationship("Match", backref="rounds")
 
 
