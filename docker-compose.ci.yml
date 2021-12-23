@@ -13,6 +13,6 @@ services:
     volumes:
       - .:/code/
     depends_on:
-      - brackend
+      - flask_app
     command:
       bash -c ":"
