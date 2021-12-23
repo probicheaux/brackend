@@ -70,7 +70,6 @@ def match_losers(from_losers, from_winners, round_index):
     return matches
 
 def match_losers_from_index(winners_match_index, round_index, length):
-    matches = []
     round_index = round_index % 4
     target_index = length - winners_match_index - 1
     midpoint = length // 2
@@ -90,8 +89,6 @@ def match_losers_from_index(winners_match_index, round_index, length):
         return length - target_index - 1
     else:
         assert False
-
-    return matches
 
 
 def run_bracket(num_seeds):
