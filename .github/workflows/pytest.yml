@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use firebase
       env:
-        FIREBASE_SECRET: ${{ test.FIREBASE_CREDENTIALS }}
+        FIREBASE_SECRET: ${{ secrets.FIREBASE_CREDENTIALS }}
       run: echo $FIREBASE_SECRET >> firebase-credentials.json
     - name: Build the Docker images
       run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml build
