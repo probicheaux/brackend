@@ -1,4 +1,4 @@
-from math import log2
+from math import log2, inf
 
 from numpy import math
 
@@ -8,7 +8,7 @@ def seed(seeds):
     seeds = [[i] for i in seeds]
     remain = 2 ** math.ceil(log2(num_seeds))
     remain = int(remain) - num_seeds
-    seeds = seeds + [[num_seeds + 1]] * remain
+    seeds = seeds + [[inf]] * remain
 
     def pair_seeds(seeds):
         if len(seeds) == 1:
@@ -23,14 +23,14 @@ def seed(seeds):
     return pair_seeds(seeds)[0]
 
 
-def match(l, all_matches, num_seeds):
+def match(l, all_matches):
     matches = []
     for i in range(len(l) // 2):
         proposed_match = tuple(l[i * 2 : i * 2 + 2])
         if not any([proposed_match in all_matches, reverse(proposed_match) in all_matches]):
             matches.append(proposed_match)
         else:
-            if num_seeds + 1 not in proposed_match:
+            if inf not in proposed_match:
                 raise ValueError
             else:
                 matches.append(proposed_match)
@@ -95,19 +95,19 @@ def run_bracket(num_seeds):
     all_matches = []
     seeds = list(range(1, num_seeds + 1))
     winners = seed(seeds)
-    matches = match(winners, all_matches, num_seeds)
+    matches = match(winners, all_matches)
     all_matches.extend(matches)
     winners = [min(m) for m in matches]
     losers = [max(m) for m in matches]
     round_index = 0
     while len(winners) > 1:
         print(f"Losers {2*round_index + 1}")
-        losers_matches = match(losers, all_matches, num_seeds)
+        losers_matches = match(losers, all_matches)
         print(losers_matches)
         all_matches.extend(losers_matches)
         winning_losers = [min(m) for m in losers_matches]
 
-        matches = match(winners, all_matches, num_seeds)
+        matches = match(winners, all_matches)
         all_matches.extend(matches)
         winners = [min(m) for m in matches]
         losers = [max(m) for m in matches]
@@ -121,6 +121,10 @@ def run_bracket(num_seeds):
         print(f"Losers {2*(round_index+1)}")
         print(losers_matches_2)
         losers = [min(m) for m in losers_matches_2]
+        if len(losers_matches) > 1:
+            for m in losers_matches_2:
+                if inf not in m:
+                    assert not any([m in all_matches, reverse(m) in all_matches])
         all_matches.extend(losers_matches_2)
         round_index += 1
 
