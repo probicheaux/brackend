@@ -1,4 +1,5 @@
 **/firebase-credentials.json
+**/dev-firebase-credentials.json
 **/.env
 **/gmail-auth.json
 **/__pycache__/
