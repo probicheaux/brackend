@@ -18,7 +18,7 @@ from brackend.tasks.tasks import (
 from brackend.util import BrackendException
 
 # App Blueprints: Blueprint for each resource
-from endpoints.tournaments.tournaments import tournament_bp
+from brackend.endpoints.tournaments.tournaments import tournament_bp
 
 api_prefix_v1 = "/api/v1"
 def register_blueprints(app):
