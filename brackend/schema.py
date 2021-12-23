@@ -59,7 +59,6 @@ def match_losers(from_losers, from_winners, round_index):
         from_winners = from_winners[midpoint:] + from_winners[:midpoint]
         from_winners = from_winners[::-1]
     elif round_index % 4 == 3:
-        midpoint = len(from_winners) // 2
         from_winners = from_winners[::-1]
     else:
         assert False
