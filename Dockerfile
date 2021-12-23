@@ -13,7 +13,7 @@ RUN apt-get -y install gcc libpq-dev
 RUN pip install poetry
 
 WORKDIR /code
-COPY pyproject.toml /code/
+COPY pyproject.toml poetry.lock /code/
 
 # Project initialization:
 RUN poetry config virtualenvs.create false \
