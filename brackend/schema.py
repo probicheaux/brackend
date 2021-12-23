@@ -69,6 +69,30 @@ def match_losers(from_losers, from_winners, round_index):
 
     return matches
 
+def match_losers_from_index(winners_match_index, round_index, length):
+    matches = []
+    round_index = round_index % 4
+    target_index = length - winners_match_index - 1
+    midpoint = length // 2
+    if round_index % 4 == 0:
+        return target_index
+    elif round_index % 4 == 1:
+        if target_index >= midpoint:
+            return target_index - midpoint
+        return target_index + midpoint
+    elif round_index % 4 == 2:
+        if target_index >= midpoint:
+            target_index = target_index - midpoint
+        else:
+            target_index += midpoint
+        return length - target_index - 1
+    elif round_index % 4 == 3:
+        return length - target_index - 1
+    else:
+        assert False
+
+    return matches
+
 
 def run_bracket(num_seeds):
     all_matches = []
@@ -91,13 +115,17 @@ def run_bracket(num_seeds):
         winners = [min(m) for m in matches]
         losers = [max(m) for m in matches]
 
-        losers_matches_2 = match_losers(winning_losers, losers[::-1], round_index)
+        losers_matches_2_pre = match_losers(winning_losers, losers[::-1], round_index)
+        losers_matches_2 = []
+        for i in range(len(losers)):
+            target_ind = match_losers_from_index(i, round_index, len(losers))
+            losers_matches_2.append((winning_losers[i], losers[target_ind]))
+        assert losers_matches_2_pre == losers_matches_2
         print(f"Losers {2*(round_index+1)}")
         print(losers_matches_2)
         losers = [min(m) for m in losers_matches_2]
         all_matches.extend(losers_matches_2)
         round_index += 1
 
-
 if __name__ == "__main__":
-    run_bracket(256)
+    run_bracket(300)
