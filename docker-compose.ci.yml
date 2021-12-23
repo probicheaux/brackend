@@ -1,0 +1,18 @@
+
+version: '3'
+
+services:
+  ci:
+    build:
+      context: .
+      target: ci
+    container_name: brackend
+    image: brackend:ci
+    environment:
+      - IS_DOCKER=1
+    volumes:
+      - .:/code/
+    depends_on:
+      - brackend
+    command:
+      bash -c ":"

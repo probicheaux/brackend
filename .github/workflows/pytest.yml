@@ -1,0 +1,16 @@
+name: Brackend Tests
+on:
+  pull_request:
+    branches: [main]
+  push: 
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker images
+      run: docker-compose -f docker-compose.yml -f docker-compose.ci.ymlbuild
+    - name: Test
+      run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run ci pytest brackend/t/
