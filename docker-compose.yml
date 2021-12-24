@@ -26,7 +26,9 @@ services:
     container_name: brackend
     image: brackend:latest
     restart: always
-    build: .
+    build:
+      context: .
+      target: prod
     ports:
       - "8000:8000"
     command: ./flask-app.sh

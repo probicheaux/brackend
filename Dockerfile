@@ -1,4 +1,4 @@
-FROM python:3.9.5-slim-buster
+FROM python:3.9.5-slim-buster AS prod
 
 # set work directory
 # WORKDIR /usr/src/app
@@ -21,3 +21,6 @@ RUN poetry config virtualenvs.create false \
 
 # Creating folders, and files for a project:
 ENV PYTHONPATH "${PYTHONPATH}:/code:/code/brackend"
+
+FROM prod as ci
+RUN pip install pytest
