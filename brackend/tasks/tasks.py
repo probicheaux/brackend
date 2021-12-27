@@ -65,7 +65,7 @@ def login_user(username, password):
 
 
 @dramatiq.actor
-def save_new_tournament(name):
+def save_new_tournament(name, firebase_id):
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
         session.expire_on_commit = False

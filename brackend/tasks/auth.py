@@ -1,12 +1,41 @@
 import datetime
+from flask import request
+from functools import wraps
 
 import bcrypt
 import jwt
-from firebase_admin.auth import create_user, generate_email_verification_link
+from firebase_admin.auth import create_user, generate_email_verification_link, verify_id_token
+from flask_restful import abort
 
 from brackend.util import SECRET_KEY, BrackendException
 
 EXPIRY_DAYS = 14
+
+
+def abrt():
+    abort(401, message="Authorization Required")
+
+
+def auth_decorator(meth):
+    @wraps(meth)
+    def wrapper(*args, **kwargs):
+        bearer = request.headers.get("Authorization")
+        if bearer is None:
+            abrt()
+        bearer, token = bearer.split(maxsplit=1)
+        if bearer != "Bearer":
+            abrt()
+
+        # (TODO): Check if user is revoked here
+        try:
+            parsed = verify_id_token(token)
+        except:
+            abrt()
+
+        firebase_id = parsed["uid"]
+        return meth(firebase_id, *args, **kwargs)
+
+    return wrapper
 
 
 class AuthenticationError(BrackendException):
