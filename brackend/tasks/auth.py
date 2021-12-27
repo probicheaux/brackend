@@ -1,10 +1,10 @@
 import datetime
-from flask import request
 from functools import wraps
 
 import bcrypt
 import jwt
 from firebase_admin.auth import create_user, generate_email_verification_link, verify_id_token
+from flask import request
 from flask_restful import abort
 
 from brackend.util import SECRET_KEY, BrackendException
@@ -33,7 +33,9 @@ def auth_decorator(meth):
             abrt()
 
         firebase_id = parsed["uid"]
-        return meth(firebase_id, *args, **kwargs)
+        # Stuffs firebase_id into the decorated method
+        # Is there a better way to do this? Parse it from the token again in the method body?
+        return meth(*args, **kwargs, firebase_id=firebase_id)
 
     return wrapper
 

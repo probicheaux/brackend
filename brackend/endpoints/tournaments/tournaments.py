@@ -15,7 +15,6 @@ class Tournaments(Resource):
 
     def post(self, firebase_id):
         body = request.get_json()
-        current_app.logger.info(firebase_id)
         name = body.get("name")
         new_tourny = save_new_tournament(name, firebase_id)
         return jsonify(new_tourny.to_json())
@@ -27,7 +26,6 @@ class TournamentDetails(Resource):
     method_decorators = [auth_decorator]
 
     def get(self, firebase_id, tournament_id):
-        current_app.logger.info(firebase_id)
         tourny = get_tournament_by_id(tournament_id)
         return jsonify(tourny.to_json())
 
