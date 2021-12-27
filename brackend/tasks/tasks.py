@@ -5,75 +5,32 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from brackend.db.models import EngineGetter, NotFoundException, Tournament, User
-from brackend.tasks.auth import (
-    AuthenticationError,
-    check_password,
-    encode_auth_token,
-    generate_verification_email,
-)
 from brackend.util import BrackendException
 
 redis_broker = RedisBroker(host="redis")
 dramatiq.set_broker(redis_broker)
 
-
-@dramatiq.actor
-def save_new_user_email(username, password, email_address):
-    engine = EngineGetter.get_or_create_engine()
-    user = create_user(email=email_address)
-    with Session(engine) as session:
-        new_user = User(
-            username=username,
-            password=password,
-            email=email_address,
-            firebase_id=user.uid,
-            verified=False,
-        )
-        session.add(new_user)
-        session.commit()
-
-    verification_email = generate_verification_email(email_address)
-    subject = "Verify your account for smus bracket"
-
-
-def login_user(username, password):
-    engine = EngineGetter.get_or_create_engine()
-    with Session(engine, future=True) as session:
-        stmt = select(User).where(User.username == username).limit(2)
-        users = session.execute(stmt).scalars().all()
-
-        if not users:
-            raise NotFoundException("Found no matching account")
-        if len(users) != 1:
-            raise BrackendException("Expected exactly one matching user")
-
-        user = users[0]
-        is_correct_pass = check_password(user.password, password)
-        if not is_correct_pass:
-            raise AuthenticationError("Password doesn't match")
-
-        if not user.verified:
-            firebase_user = get_user(user.firebase_id)
-            if not firebase_user.email_verified:
-                raise BrackendException("Must verify your email address")
-
-            user.verified = True
-            session.add(user)
-            session.commit()
-
-    return encode_auth_token(user.id)
-
-
-@dramatiq.actor
 def save_new_tournament(name, firebase_id):
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
         session.expire_on_commit = False
         new_tourny = Tournament(name=name)
+        user = get_user_by_uid(firebase_id)
+        if user is None:
+            raise BrackendException("Somehow a nonexistent user is trying to save a tournament")
+        new_tourny.users.append(user)
         session.add(new_tourny)
         session.commit()
         return new_tourny
 
+def save_new_user(username, firebase_id):
+    engine = EngineGetter.get_or_create_engine()
+    with Session(engine) as session:
+        session.expire_on_commit = False
+        new_user = User(firebase_id=firebase_id, username=username)
+        session.add(new_user)
+        session.commit()
+        return new_user
 
 def get_user_ids():
     engine = EngineGetter.get_or_create_engine()
@@ -89,11 +46,30 @@ def get_tournament_ids():
         return [u.id for u in users]
 
 
-def get_tournament_by_id(id):
+def get_tournament_by_id(t_id):
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
         tournament = session\
             .query(Tournament)\
-            .filter(Tournament.id == id)\
+            .filter(Tournament.id == t_id)\
             .one_or_none()
         return tournament
+
+def get_tournaments_by_uid(uid):
+    engine = EngineGetter.get_or_create_engine()
+    with Session(engine) as session:
+        tournaments = session\
+            .query(Tournament)\
+            .join(Tournament.users)\
+            .where(User.firebase_id == uid)\
+            .all()
+        return tournaments
+
+def get_user_by_uid(uid):
+    engine = EngineGetter.get_or_create_engine()
+    with Session(engine) as session:
+        user = session\
+            .query(User)\
+            .filter(User.firebase_id == uid)\
+            .one_or_none()
+        return user

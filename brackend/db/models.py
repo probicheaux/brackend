@@ -32,15 +32,15 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     username = Column(String(255), nullable=False)
-    password = Column(String(255), nullable=True)
-    email = Column(String(255), nullable=True)
-    verified = Column(Boolean, default=False)
     tournaments = relationship("Tournament", secondary="user_tournaments", back_populates="users")
-    firebase_id = Column(String(255), nullable=False)
+    firebase_id = Column(String(255), nullable=False, unique=True)
     admin = Column(Boolean, default=False)
 
     def __repr__(self):
         return f"User(id={self.id}, username={self.username})"
+
+    def to_json(self):
+        return {"username": self.username, "firebase_id": self.firebase_id}
 
 
 class Tournament(Base):
@@ -57,10 +57,7 @@ class Tournament(Base):
         return f"Tournament(id={self.id}, name={self.name})"
 
     def to_json(self):
-        return {
-            "name": self.name,
-            "id": self.id
-        }
+        return {"name": self.name, "id": self.id}
 
 
 class UserTournament(Base):
@@ -124,4 +121,3 @@ class EngineGetter:
 def clear_models():
     engine = EngineGetter.get_or_create_engine()
     Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)

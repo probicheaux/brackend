@@ -7,25 +7,18 @@ from os.path import dirname, join
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from brackend.tasks.auth import get_password_and_salt
-from brackend.tasks.tasks import (
-    get_tournament_ids,
-    get_user_ids,
-    login_user,
-    save_new_tournament,
-    save_new_user_email,
-)
-from brackend.util import BrackendException
-
 # App Blueprints: Blueprint for each resource
 from brackend.endpoints.tournaments.tournaments import tournament_bp
+from brackend.endpoints.users import users_bp
 
 api_prefix_v1 = "/api/v1"
+
+
 def register_blueprints(app):
-    """
-        Register all blueprints for the app
-    """
+    """Register all blueprints for the app."""
     app.register_blueprint(tournament_bp, url_prefix=api_prefix_v1)
+    app.register_blueprint(users_bp, url_prefix=api_prefix_v1)
+
 
 app = Flask(__name__)
 path = dirname(__file__)
@@ -63,67 +56,6 @@ def mock_rounds():
 @app.route("/api/hello/", methods=["GET"])
 def hello():
     return jsonify(success=True)
-
-
-@app.route("/api/user/register-from-email/", methods=["POST"])
-def register_user():
-    response_json = request.get_json()
-    username = response_json.get("username")
-    password = response_json.get("password")
-    email = response_json.get("email")
-    password = get_password_and_salt(password)
-    save_new_user_email.send(username, password, email)
-    return jsonify(success=True)
-
-
-@app.route("/api/user/login/", methods=["POST"])
-def login():
-    response_json = request.get_json()
-    username = response_json.get("username")
-    password = response_json.get("password")
-    try:
-        jwt = login_user(username, password)
-        return jsonify(success=True, token=jwt)
-    except BrackendException as error:
-        app.log_exception(error)
-        return jsonify(success=False, token=None)
-
-
-@app.route("/api/user/logout/", methods=["POST"])
-def logout():
-    response_json = request.get_json()
-    username = response_json.get("username")
-    password = response_json.get("password")
-    app.logger.info("Got POST at /api/user/logout/")
-    return jsonify(token="truthy token: u: " + username + " p: " + password)
-
-
-@app.route("/api/tournament/register/", methods=["POST"])
-def register_tournament():
-    response_json = request.get_json()
-    name = response_json.get("name")
-    save_new_tournament.send(name)
-    return jsonify(success=True)
-
-
-@app.route("/api/user/list/", methods=["GET"])
-def get_users():
-    return jsonify(get_user_ids())
-
-
-@app.route("/api/tournament/list/", methods=["GET"])
-def get_tournaments():
-    return jsonify(get_tournament_ids())
-
-
-@app.route("/api/tournament/", methods=["POST"])
-def tournament():
-    request_json = request.get_json()
-    tourney_id = request_json.get("tourney_id")
-    app.logger.info(f"Got post at /api/tournament/")
-    app.logger.info(f"tourney_id: {tourney_id}")
-
-    return jsonify(rounds=mock_rounds())
 
 
 @app.route("/api/tournament/makeBracketFromEntrants/", methods=["POST"])
