@@ -22,7 +22,7 @@ class Users(Resource):
     def get(self, firebase_id):
         user = get_user_by_uid(firebase_id)
         if user is None:
-            abort(404, f"User with id {firebase_id} not found")
+            abort(404, message=f"User with id {firebase_id} not found")
 
         return jsonify(user.to_json())
 
