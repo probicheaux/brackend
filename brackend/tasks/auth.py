@@ -2,8 +2,9 @@ import logging
 from functools import wraps
 
 from firebase_admin.auth import verify_id_token
-from flask import request
+from flask import request, g
 from flask_restful import abort, current_app
+from brackend.tasks.tasks import get_user_by_uid
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ def abrt():
 def requires_auth_method_wrapper(meth):
     """Wraps a restful method with an auth check.
 
-    Stuffs firebase_id into the method.
+    stuffs firebase_id into the method.
     """
 
     @wraps(meth)
@@ -34,10 +35,8 @@ def requires_auth_method_wrapper(meth):
         except:
             abrt()
 
-        firebase_id = parsed["uid"]
-        # Stuffs firebase_id into the decorated method
-        # Is there a better way to do this? Parse it from the token again in the method body?
-        return meth(*args, **kwargs, firebase_id=firebase_id)
+        g.firebase_id = parsed["uid"]
+        return meth(*args, **kwargs)
 
     return wrapper
 

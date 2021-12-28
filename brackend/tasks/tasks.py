@@ -1,13 +1,10 @@
 import dramatiq
 from dramatiq.brokers.redis import RedisBroker
-from firebase_admin.auth import create_user, get_user
 from flask_restful import current_app
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from brackend.db.models import (
     EngineGetter,
-    NotFoundException,
     Tournament,
     User,
     UserRole,
@@ -68,7 +65,11 @@ def get_tournament_ids():
 def get_tournament_by_id(t_id):
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
-        tournament = session.query(Tournament).filter(Tournament.id == t_id).one_or_none()
+        tournament = (
+            session.query(Tournament)
+            .filter(Tournament.id == t_id)
+            .one_or_none()
+        )
         return tournament
 
 

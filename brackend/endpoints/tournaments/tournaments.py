@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, g
 from flask_restful import Api, Resource
 
 from brackend.tasks.auth import requires_auth
@@ -12,14 +12,14 @@ tournament_api = Api(tournament_bp)
 class Tournaments(Resource):
     """Create a new tournament."""
 
-    def post(self, firebase_id):
+    def post(self):
         body = request.get_json()
         name = body.get("name")
-        new_tourny = save_new_tournament(name, firebase_id)
+        new_tourny = save_new_tournament(name, g.firebase_id)
         return jsonify(new_tourny.to_json())
 
-    def get(self, firebase_id):
-        tourneys = get_tournaments_by_uid(firebase_id)
+    def get(self):
+        tourneys = get_tournaments_by_uid(g.firebase_id)
         return jsonify(tournaments=[tournament.to_json() for tournament in tourneys])
 
 
@@ -27,7 +27,7 @@ class Tournaments(Resource):
 class TournamentDetails(Resource):
     """Get info for specific tournament, by id."""
 
-    def get(self, firebase_id, tournament_id):
+    def get(self, tournament_id):
         tourny = get_tournament_by_id(tournament_id)
         return jsonify(tourny.to_json())
 
