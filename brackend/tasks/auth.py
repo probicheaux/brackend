@@ -1,46 +1,49 @@
-import datetime
+import logging
+from functools import wraps
 
-import bcrypt
-import jwt
-from firebase_admin.auth import create_user, generate_email_verification_link
+from firebase_admin.auth import verify_id_token
+from flask import request, g
+from flask_restful import abort, current_app
+from brackend.tasks.tasks import get_user_by_uid
 
-from brackend.util import SECRET_KEY, BrackendException
-
-EXPIRY_DAYS = 14
-
-
-class AuthenticationError(BrackendException):
-    pass
+logger = logging.getLogger(__name__)
 
 
-def encode_auth_token(user_id):
-    """Generates the Auth Token."""
-    payload = {
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(days=EXPIRY_DAYS),
-        "iat": datetime.datetime.utcnow(),
-        "sub": user_id,
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+def abrt():
+    """Abort with a 401 response code."""
+    abort(401, message="Authorization Required")
 
 
-def get_password_and_salt(password):
-    salt = bcrypt.gensalt()
-    password = password.encode()
-    hashed = bcrypt.hashpw(password, salt)
-    return hashed.decode()
+def requires_auth_method_wrapper(meth):
+    """Wraps a restful method with an auth check.
+
+    stuffs firebase_id into the method.
+    """
+
+    @wraps(meth)
+    def wrapper(*args, **kwargs):
+        bearer = request.headers.get("Authorization")
+        if bearer is None:
+            abrt()
+        bearer, token = bearer.split(maxsplit=1)
+        if bearer != "Bearer":
+            abrt()
+
+        # (TODO): Check if user is revoked here
+        try:
+            parsed = verify_id_token(token)
+        except:
+            abrt()
+
+        g.firebase_id = parsed["uid"]
+        return meth(*args, **kwargs)
+
+    return wrapper
 
 
-def check_password(hashed, password):
-    hashed = hashed.encode()
-    password = password.encode()
-    return bcrypt.checkpw(password, hashed)
-
-
-def generate_verification_email(email_address):
-    link = generate_email_verification_link(email_address)
-    body = f"Click the link to verify your smus bracket account :)\n\n{link}"
-    return body
-
-
-def create_user_firebase(email_address):
-    return create_user(email=email_address)
+def requires_auth(clazz):
+    # Note: must use this awkward addition thing instead of mutating the method_decorators list
+    # because if method decorators is defined for Resource but not Child(Resource) = clazz,
+    # we'll just be mutating Resource.method_decorators
+    clazz.method_decorators = clazz.method_decorators + [requires_auth_method_wrapper]
+    return clazz

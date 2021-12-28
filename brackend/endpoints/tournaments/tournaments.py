@@ -1,36 +1,36 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, current_app, jsonify, request, g
+from flask_restful import Api, Resource
 
-from flask_restful import Api
-from flask_restful import Resource
+from brackend.tasks.auth import requires_auth
+from brackend.tasks.tasks import get_tournament_by_id, save_new_tournament, get_tournaments_by_uid
 
-from brackend.tasks.tasks import (
-    save_new_tournament,
-    get_tournament_by_id,
-)
-
-tournament_bp = Blueprint('tournaments', __name__)
+tournament_bp = Blueprint("tournaments", __name__)
 tournament_api = Api(tournament_bp)
 
 
+@requires_auth
 class Tournaments(Resource):
-    """
-        Create a new tournament
-    """
+    """Create a new tournament."""
+
     def post(self):
         body = request.get_json()
         name = body.get("name")
-        new_tourny = save_new_tournament(name)
+        new_tourny = save_new_tournament(name, g.firebase_id)
         return jsonify(new_tourny.to_json())
 
+    def get(self):
+        tourneys = get_tournaments_by_uid(g.firebase_id)
+        return jsonify(tournaments=[tournament.to_json() for tournament in tourneys])
 
+
+@requires_auth
 class TournamentDetails(Resource):
-    """
-        Get info for specific tournament, by id
-    """
+    """Get info for specific tournament, by id."""
+
     def get(self, tournament_id):
         tourny = get_tournament_by_id(tournament_id)
         return jsonify(tourny.to_json())
 
 
-tournament_api.add_resource(Tournaments, '/tournaments')
-tournament_api.add_resource(TournamentDetails, '/tournaments/<string:tournament_id>')
+tournament_api.add_resource(Tournaments, "/tournaments")
+tournament_api.add_resource(TournamentDetails, "/tournaments/<string:tournament_id>")
