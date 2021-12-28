@@ -1,17 +1,16 @@
 from flask import Blueprint, current_app, jsonify, request
 from flask_restful import Api, Resource, abort
 
-from brackend.tasks.auth import auth_decorator
+from brackend.tasks.auth import requires_auth
 from brackend.tasks.tasks import get_user_by_uid, save_new_user
 
 users_bp = Blueprint("users", __name__)
 users_api = Api(users_bp)
 
 
+@requires_auth
 class Users(Resource):
     """Create a new user from a firebase user."""
-
-    method_decorators = [auth_decorator]
 
     def post(self, firebase_id):
         body = request.get_json()
@@ -26,10 +25,9 @@ class Users(Resource):
 
         return jsonify(user.to_json())
 
+@requires_auth
 class UserDetails(Resource):
     """Get info for specific tournament, by id."""
-
-    method_decorators = [auth_decorator]
 
     def get(self, firebase_id, user_id):
         user = get_user_by_uid(user_id)

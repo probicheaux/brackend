@@ -1,17 +1,16 @@
 from flask import Blueprint, current_app, jsonify, request
 from flask_restful import Api, Resource
 
-from brackend.tasks.auth import auth_decorator
+from brackend.tasks.auth import requires_auth
 from brackend.tasks.tasks import get_tournament_by_id, save_new_tournament, get_tournaments_by_uid
 
 tournament_bp = Blueprint("tournaments", __name__)
 tournament_api = Api(tournament_bp)
 
 
+@requires_auth
 class Tournaments(Resource):
     """Create a new tournament."""
-
-    method_decorators = [auth_decorator]
 
     def post(self, firebase_id):
         body = request.get_json()
@@ -24,10 +23,9 @@ class Tournaments(Resource):
         return jsonify(tournaments=[tournament.to_json() for tournament in tourneys])
 
 
+@requires_auth
 class TournamentDetails(Resource):
     """Get info for specific tournament, by id."""
-
-    method_decorators = [auth_decorator]
 
     def get(self, firebase_id, tournament_id):
         tourny = get_tournament_by_id(tournament_id)
