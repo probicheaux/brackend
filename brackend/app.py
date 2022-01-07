@@ -10,6 +10,7 @@ from flask_cors import CORS
 # App Blueprints: Blueprint for each resource
 from brackend.endpoints.tournaments.tournaments import tournament_bp
 from brackend.endpoints.users import users_bp
+from brackend.endpoints.brackets.brackets import brackets_bp
 
 api_prefix_v1 = "/api/v1"
 
@@ -18,6 +19,7 @@ def register_blueprints(app):
     """Register all blueprints for the app."""
     app.register_blueprint(tournament_bp, url_prefix=api_prefix_v1)
     app.register_blueprint(users_bp, url_prefix=api_prefix_v1)
+    app.register_blueprint(brackets_bp, url_prefix=api_prefix_v1)
 
 
 app = Flask(__name__)
