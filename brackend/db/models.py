@@ -1,5 +1,4 @@
 """Module that defines/creates/holds ORMs for the database."""
-import enum
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, create_engine
@@ -8,20 +7,9 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import declarative_base, relationship, backref
 
 from brackend.util import DOCKER_POSTGRES_URL, BrackendException
+from brackend.db.enums import MatchProgress, UserRole
 
 Base = declarative_base()
-
-
-class MatchProgress(enum.Enum):
-    not_started = enum.auto()
-    in_progress = enum.auto()
-    completed = enum.auto()
-
-
-class UserRole(enum.Enum):
-    player = enum.auto()
-    spectator = enum.auto()
-    organizer = enum.auto()
 
 
 class NotFoundException(BrackendException):
@@ -83,6 +71,9 @@ class Bracket(Base):
     name = Column(String(255), nullable=False)
     tournament = Column(Integer, ForeignKey("tournaments.id"))
     rounds = relationship("Round", backref="brackets")
+
+    def to_json(self):
+        return {"name": self.name, "tournament": self.tournament}
 
 
 class Round(Base):
