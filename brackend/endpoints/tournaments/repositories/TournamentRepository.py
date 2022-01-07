@@ -25,9 +25,6 @@ class TournamentRepository(ABC):
                 .filter(UserTournament.role == UserRole.organizer)\
                 .all()
 
-            print("Got result from join query:")
-            print(result)
-
             return {
                 **result.Tournanment,
                 "owner": result.User
