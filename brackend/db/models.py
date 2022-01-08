@@ -73,7 +73,7 @@ class Bracket(Base):
     rounds = relationship("Round", backref="brackets")
 
     def to_json(self):
-        return {"name": self.name, "tournament": self.tournament}
+        return {"id": self.id, "name": self.name, "tournament": self.tournament}
 
 
 class Round(Base):
