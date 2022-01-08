@@ -15,7 +15,6 @@ class TournamentRepository(ABC):
     @classmethod
     def get_by_id(cls, t_id):
         with Session(cls.engine) as session:
-            session.expire_on_commit = False
             tournament = session.query(Tournament) \
                 .options(subqueryload(Tournament.brackets)) \
                 .filter(Tournament.id == t_id) \
