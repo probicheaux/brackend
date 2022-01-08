@@ -44,8 +44,9 @@ class TournamentRepository(ABC):
     def search_by_name(cls, name, count=20):
         with Session(cls.engine) as session:
             search = "%{}%".format(name)
-            results = session.query(Tournament)\
-                .filter(Tournament.name.like(search))\
+            results = session.query(Tournament) \
+                .options(subqueryload(Tournament.brackets)) \
+                .filter(Tournament.name.ilike(search))\
                 .limit(count)\
                 .all()
             return results
