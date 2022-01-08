@@ -48,7 +48,7 @@ class Tournament(Base):
         return f"Tournament(id={self.id}, name={self.name})"
 
     def to_json(self):
-        return {"name": self.name, "id": self.id}
+        return {"name": self.name, "id": self.id, "brackets": [b.to_json() for b in self.brackets]}
 
 
 class UserTournament(Base):

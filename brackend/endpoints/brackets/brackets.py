@@ -9,7 +9,6 @@ from brackend.endpoints.brackets.repositories.BracketRepository import BracketRe
 brackets_bp = Blueprint("brackets", __name__)
 brackets_api = Api(brackets_bp)
 
-
 @requires_auth
 class Brackets(Resource):
     """Add a new bracket to an existing tournament."""
@@ -19,8 +18,8 @@ class Brackets(Resource):
         tournament_id = body.get("tournament")
 
         # Validate that this user owns the tournament they are attempting to add a bracket to
-        tournament = TournamentRepository.get_by_id(tournament_id)
-        if g.user.uid != tournament.owner.id:
+        tournament, owner = TournamentRepository.get_by_id_with_owner(tournament_id)
+        if g.user.id != owner.id:
             raise BrackendException("Tournament does not belong to user")
         data = {
             "tournament": body.get("tournament"),
@@ -35,8 +34,8 @@ class BracketDetails(Resource):
 
     def delete(self, bracket_id):
         bracket = BracketRepository.get_by_id(bracket_id)
-        tournament = TournamentRepository.get_by_id(bracket.tournament)
-        if g.user.uid != tournament.owner.id:
+        tournament, owner = TournamentRepository.get_by_id_with_owner(bracket.tournament)
+        if g.user.id != owner.id:
             raise BrackendException("Tournament does not belong to user")
         deleted = BracketRepository.delete(bracket_id)
         return jsonify(deleted.to_json())
