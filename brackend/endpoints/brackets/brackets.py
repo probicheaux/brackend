@@ -32,6 +32,11 @@ class Brackets(Resource):
 @requires_auth
 class BracketDetails(Resource):
 
+    def get(self, bracket_id):
+        bracket = BracketRepository.get_by_id(bracket_id)
+        participants = BracketRepository.get_participants(bracket_id)
+        return jsonify(bracket.to_json(participants=[p.to_json() for p in participants]))
+
     def delete(self, bracket_id):
         bracket = BracketRepository.get_by_id(bracket_id)
         tournament, owner = TournamentRepository.get_by_id_with_owner(bracket.tournament)
@@ -40,6 +45,19 @@ class BracketDetails(Resource):
         deleted = BracketRepository.delete(bracket_id)
         return jsonify(deleted.to_json())
 
+@requires_auth
+class BracketJoin(Resource):
+    def post(self, bracket_id):
+        has_joined = BracketRepository.check_has_joined(
+            bracket_id=bracket_id,
+            user=g.user,
+        )
+        if has_joined:
+            return {"message": "User has already joined this bracket"}, 200
+        BracketRepository.join_bracket(bracket_id=bracket_id, user=g.user)
+        return {"message": "Joined tournament"}, 200
+
 
 brackets_api.add_resource(Brackets, "/brackets")
 brackets_api.add_resource(BracketDetails, "/brackets/<string:bracket_id>")
+brackets_api.add_resource(BracketJoin, "/brackets/<string:bracket_id>/join")

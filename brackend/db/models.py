@@ -58,6 +58,7 @@ class UserTournament(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     tournament_id = Column(Integer, ForeignKey("tournaments.id"))
+    bracket_id = Column(Integer, ForeignKey("brackets.id"))
     user = relationship("User", backref=backref("user_tournaments", cascade="all, delete-orphan"))
     tournament = relationship("Tournament", backref=backref("user_tournaments", cascade="all, delete-orphan"))
     role = Column(ENUM(UserRole), nullable=False)
@@ -72,8 +73,8 @@ class Bracket(Base):
     tournament = Column(Integer, ForeignKey("tournaments.id"))
     rounds = relationship("Round", backref="brackets")
 
-    def to_json(self):
-        return {"id": self.id, "name": self.name, "tournament": self.tournament}
+    def to_json(self, participants=[]):
+        return {"id": self.id, "name": self.name, "tournament": self.tournament, "participants": participants}
 
 
 class Round(Base):

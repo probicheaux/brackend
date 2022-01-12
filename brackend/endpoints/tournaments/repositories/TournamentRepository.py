@@ -23,6 +23,17 @@ class TournamentRepository(ABC):
             return tournament
 
     @classmethod
+    def get_all_for_user(cls, user):
+        with Session(cls.engine) as session:
+            tournaments = session.query(Tournament) \
+                .options(subqueryload(Tournament.brackets)) \
+                .join(Tournament.user_tournaments) \
+                .where(UserTournament.user_id == user.id) \
+                .all()
+
+            return tournaments
+
+    @classmethod
     def get_by_id_with_owner(cls, t_id):
         """
             Return a tournament with it's owner info

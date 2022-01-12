@@ -14,4 +14,11 @@ make sure to do `docker-compose down` and `docker-compose build` when you're mak
 - install `poetry`
 - `poetry config --local virtualenvs.in-project true`
 - run `poetry install`
-- set PyCharm Python interpreter from `Preferences > Project > Python Interpreter` 
+- set PyCharm Python interpreter from `Preferences > Project > Python Interpreter`
+
+### DB Migrations
+With the docker container for the DB running, and the virtual env sourced, use
+
+`alembic revision --autogenerate -m "your message here"`
+
+to create a new migration
