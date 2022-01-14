@@ -44,11 +44,23 @@ class Tournament(Base):
     users = association_proxy("user_tournaments", "user")
     brackets = relationship("Bracket", backref="tournaments")
 
+    def __init__(self, data):
+        super.__init__(self, data)
+        self.owner = None
+
     def __repr__(self):
         return f"Tournament(id={self.id}, name={self.name})"
 
+    def add_owner_info(self, data):
+        self.owner = data
+
     def to_json(self):
-        return {"name": self.name, "id": self.id, "brackets": [b.to_json() for b in self.brackets]}
+        return {
+            "name": self.name,
+            "id": self.id,
+            "brackets": [b.to_json() for b in self.brackets],
+            "owner": self.owner.to_json()
+        }
 
 
 class UserTournament(Base):
