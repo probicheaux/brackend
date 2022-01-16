@@ -59,7 +59,7 @@ class Tournament(Base):
             "name": self.name,
             "id": self.id,
             "brackets": [b.to_json() for b in self.brackets],
-            "owner": self.owner.to_json()
+            "owner": hasattr(self, "owner") and self.owner.to_json()
         }
 
 
