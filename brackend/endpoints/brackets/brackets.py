@@ -55,7 +55,7 @@ class BracketJoin(Resource):
         if has_joined:
             return {"message": "User has already joined this bracket"}, 200
         BracketRepository.join_bracket(bracket_id=bracket_id, user=g.user)
-        return {"message": "Joined tournament"}, 200
+        return {"message": "Joined tournament"}
 
 
 brackets_api.add_resource(Brackets, "/brackets")

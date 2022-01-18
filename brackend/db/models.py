@@ -85,7 +85,7 @@ class Bracket(Base):
     tournament = Column(Integer, ForeignKey("tournaments.id"))
     rounds = relationship("Round", backref="brackets")
 
-    def to_json(self, participants=[]):
+    def to_json(self, participants=None):
         return {"id": self.id, "name": self.name, "tournament": self.tournament, "participants": participants}
 
 
