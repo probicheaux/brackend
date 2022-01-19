@@ -44,11 +44,23 @@ class Tournament(Base):
     users = association_proxy("user_tournaments", "user")
     brackets = relationship("Bracket", backref="tournaments")
 
+    def __init__(self, data):
+        super.__init__(self, data)
+        self.owner = None
+
     def __repr__(self):
         return f"Tournament(id={self.id}, name={self.name})"
 
+    def add_owner_info(self, data):
+        self.owner = data
+
     def to_json(self):
-        return {"name": self.name, "id": self.id, "brackets": [b.to_json() for b in self.brackets]}
+        return {
+            "name": self.name,
+            "id": self.id,
+            "brackets": [b.to_json() for b in self.brackets],
+            "owner": hasattr(self, "owner") and self.owner.to_json()
+        }
 
 
 class UserTournament(Base):
@@ -58,6 +70,7 @@ class UserTournament(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     tournament_id = Column(Integer, ForeignKey("tournaments.id"))
+    bracket_id = Column(Integer, ForeignKey("brackets.id"))
     user = relationship("User", backref=backref("user_tournaments", cascade="all, delete-orphan"))
     tournament = relationship("Tournament", backref=backref("user_tournaments", cascade="all, delete-orphan"))
     role = Column(ENUM(UserRole), nullable=False)
@@ -72,8 +85,8 @@ class Bracket(Base):
     tournament = Column(Integer, ForeignKey("tournaments.id"))
     rounds = relationship("Round", backref="brackets")
 
-    def to_json(self):
-        return {"id": self.id, "name": self.name, "tournament": self.tournament}
+    def to_json(self, participants=None):
+        return {"id": self.id, "name": self.name, "tournament": self.tournament, "participants": participants}
 
 
 class Round(Base):

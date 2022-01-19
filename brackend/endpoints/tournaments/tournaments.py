@@ -20,7 +20,7 @@ class Tournaments(Resource):
         return jsonify(new_tourny.to_json())
 
     def get(self):
-        tourneys = get_tournaments_by_uid(g.firebase_id)
+        tourneys = TournamentRepository.get_all_for_user(g.user)
         return jsonify(tournaments=[tournament.to_json() for tournament in tourneys])
 
 

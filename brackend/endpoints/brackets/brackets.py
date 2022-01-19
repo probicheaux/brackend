@@ -18,8 +18,8 @@ class Brackets(Resource):
         tournament_id = body.get("tournament")
 
         # Validate that this user owns the tournament they are attempting to add a bracket to
-        tournament, owner = TournamentRepository.get_by_id_with_owner(tournament_id)
-        if g.user.id != owner.id:
+        tournament = TournamentRepository.get_by_id(tournament_id)
+        if g.user.id != tournament.owner.id:
             raise BrackendException("Tournament does not belong to user")
         data = {
             "tournament": body.get("tournament"),
@@ -32,14 +32,32 @@ class Brackets(Resource):
 @requires_auth
 class BracketDetails(Resource):
 
+    def get(self, bracket_id):
+        bracket = BracketRepository.get_by_id(bracket_id)
+        participants = BracketRepository.get_participants(bracket_id)
+        return jsonify(bracket.to_json(participants=[p.to_json() for p in participants]))
+
     def delete(self, bracket_id):
         bracket = BracketRepository.get_by_id(bracket_id)
-        tournament, owner = TournamentRepository.get_by_id_with_owner(bracket.tournament)
-        if g.user.id != owner.id:
+        tournament = TournamentRepository.get_by_id(bracket.tournament)
+        if g.user.id != tournament.owner.id:
             raise BrackendException("Tournament does not belong to user")
         deleted = BracketRepository.delete(bracket_id)
         return jsonify(deleted.to_json())
 
+@requires_auth
+class BracketJoin(Resource):
+    def post(self, bracket_id):
+        has_joined = BracketRepository.check_has_joined(
+            bracket_id=bracket_id,
+            user=g.user,
+        )
+        if has_joined:
+            return {"message": "User has already joined this bracket"}, 200
+        BracketRepository.join_bracket(bracket_id=bracket_id, user=g.user)
+        return {"message": "Joined tournament"}
+
 
 brackets_api.add_resource(Brackets, "/brackets")
 brackets_api.add_resource(BracketDetails, "/brackets/<string:bracket_id>")
+brackets_api.add_resource(BracketJoin, "/brackets/<string:bracket_id>/join")
