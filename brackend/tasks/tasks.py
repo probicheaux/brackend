@@ -7,9 +7,9 @@ from brackend.db.models import (
     EngineGetter,
     Tournament,
     User,
-    UserRole,
     UserTournament,
 )
+from brackend.db.enums import UserRole
 from brackend.util import BrackendException
 
 redis_broker = RedisBroker(host="redis")
@@ -60,17 +60,6 @@ def get_tournament_ids():
     with Session(engine) as session:
         users = session.query(Tournament).all()
         return [u.id for u in users]
-
-
-def get_tournament_by_id(t_id):
-    engine = EngineGetter.get_or_create_engine()
-    with Session(engine) as session:
-        tournament = (
-            session.query(Tournament)
-            .filter(Tournament.id == t_id)
-            .one_or_none()
-        )
-        return tournament
 
 
 def get_tournaments_by_uid(uid):

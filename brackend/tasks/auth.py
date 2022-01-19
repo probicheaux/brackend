@@ -36,6 +36,8 @@ def requires_auth_method_wrapper(meth):
             abrt()
 
         g.firebase_id = parsed["uid"]
+        g.user = get_user_by_uid(g.firebase_id)
+
         return meth(*args, **kwargs)
 
     return wrapper
