@@ -8,9 +8,9 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 # App Blueprints: Blueprint for each resource
-from brackend.endpoints.tournaments.tournaments import tournament_bp
+from brackend.endpoints.tournaments import tournament_bp
 from brackend.endpoints.users import users_bp
-from brackend.endpoints.brackets.brackets import brackets_bp
+from brackend.endpoints.brackets import brackets_bp
 
 api_prefix_v1 = "/api/v1"
 

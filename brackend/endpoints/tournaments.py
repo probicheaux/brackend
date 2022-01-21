@@ -1,9 +1,9 @@
-from flask import Blueprint, current_app, jsonify, request, g
+from flask import Blueprint, jsonify, request, g
 from flask_restful import Api, Resource
 
 from brackend.tasks.auth import requires_auth
-from brackend.tasks.tasks import save_new_tournament, get_tournaments_by_uid
-from brackend.endpoints.tournaments.repositories.TournamentRepository import TournamentRepository
+from brackend.tasks.tasks import save_new_tournament
+from brackend.repositories.TournamentRepository import TournamentRepository
 
 tournament_bp = Blueprint("tournaments", __name__)
 tournament_api = Api(tournament_bp)

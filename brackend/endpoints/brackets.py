@@ -3,8 +3,8 @@ from flask_restful import Api, Resource
 
 from brackend.tasks.auth import requires_auth
 from brackend.util import BrackendException
-from brackend.endpoints.tournaments.repositories.TournamentRepository import TournamentRepository
-from brackend.endpoints.brackets.repositories.BracketRepository import BracketRepository
+from brackend.repositories.TournamentRepository import TournamentRepository
+from brackend.repositories.BracketRepository import BracketRepository
 
 brackets_bp = Blueprint("brackets", __name__)
 brackets_api = Api(brackets_bp)
