@@ -1,7 +1,7 @@
 """Module that defines/creates/holds ORMs for the database."""
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text, create_engine
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import declarative_base, relationship, backref
@@ -40,6 +40,7 @@ class Tournament(Base):
     __tablename__ = "tournaments"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
     date = Column(DateTime, default=datetime.now)
     users = association_proxy("user_tournaments", "user")
     brackets = relationship("Bracket", backref="tournaments")
@@ -82,6 +83,7 @@ class Bracket(Base):
     __tablename__ = "brackets"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
     tournament = Column(Integer, ForeignKey("tournaments.id"))
     rounds = relationship("Round", backref="brackets")
 

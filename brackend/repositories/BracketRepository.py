@@ -20,6 +20,7 @@ class BracketRepository(ABC):
             new_bracket = Bracket(
                 name=data.get("name"),
                 tournament=data.get("tournament"),
+                description=data.get("description"),
                 # TODO: rounds = ???
             )
             session.add(new_bracket)
