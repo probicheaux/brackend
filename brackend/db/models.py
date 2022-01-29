@@ -42,6 +42,15 @@ class Tournament(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     date = Column(DateTime, default=datetime.now)
+
+    # Submitted on creation
+    start_date = Column(DateTime(timezone=True), nullable=True)
+    end_date = Column(DateTime(timezone=True))
+
+    # Updated when actually starting/ending a tournament
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    ended_at = Column(DateTime(timezone=True))
+
     users = association_proxy("user_tournaments", "user")
     brackets = relationship("Bracket", backref="tournaments")
 
@@ -59,6 +68,7 @@ class Tournament(Base):
         return {
             "name": self.name,
             "id": self.id,
+            "description": self.description,
             "brackets": [b.to_json() for b in self.brackets],
             "owner": hasattr(self, "owner") and self.owner.to_json()
         }

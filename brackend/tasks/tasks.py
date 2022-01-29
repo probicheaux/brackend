@@ -22,7 +22,9 @@ def save_new_tournament(data, firebase_id):
         session.expire_on_commit = False
         new_tourney = Tournament(
             name=data.name,
-            desription=data.get("description")
+            desription=data.get("description"),
+            start_date=data.get("start_date"),
+            end_date=data.get("end_date"),
         )
         user = get_user_by_uid(firebase_id)
         session.add(user)
