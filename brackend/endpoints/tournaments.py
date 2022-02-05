@@ -29,8 +29,8 @@ class TournamentDetails(Resource):
     """Get info for specific tournament, by id."""
 
     def get(self, tournament_id):
-        tourny_json = TournamentRepository.get_by_id(tournament_id)
-        return jsonify(tourny_json.to_json())
+        tourny = TournamentRepository.get_by_id(tournament_id)
+        return jsonify(tourny.to_json())
 
 
 @requires_auth
