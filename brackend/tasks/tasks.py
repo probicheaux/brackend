@@ -11,7 +11,6 @@ from brackend.db.models import (
 )
 from brackend.db.enums import UserRole
 from brackend.util import BrackendException
-from brackend.repositories.BracketRepository import BracketRepository
 
 redis_broker = RedisBroker(host="redis")
 dramatiq.set_broker(redis_broker)
