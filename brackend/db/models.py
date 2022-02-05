@@ -55,6 +55,8 @@ class Tournament(Base):
         self.owner = data
 
     def to_json(self):
+        if not hasattr(self, "owner"):
+            self.owner = None
         return {
             "name": self.name,
             "id": self.id,
