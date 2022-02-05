@@ -35,7 +35,7 @@ def save_new_tournament(name, firebase_id):
         session.commit()
         current_app.logger.info("Users: %s", new_tourney.users)
         current_app.logger.info("Tournaments: %s", user.tournaments)
-        return new_tourney
+        return new_tourney.to_json()
 
 
 def save_new_user(username, firebase_id):

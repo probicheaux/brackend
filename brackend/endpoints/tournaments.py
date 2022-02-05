@@ -1,9 +1,9 @@
-from flask import Blueprint, jsonify, request, g
+from flask import Blueprint, g, jsonify, request
 from flask_restful import Api, Resource
 
+from brackend.repositories.TournamentRepository import TournamentRepository
 from brackend.tasks.auth import requires_auth
 from brackend.tasks.tasks import save_new_tournament
-from brackend.repositories.TournamentRepository import TournamentRepository
 
 tournament_bp = Blueprint("tournaments", __name__)
 tournament_api = Api(tournament_bp)
@@ -16,12 +16,12 @@ class Tournaments(Resource):
     def post(self):
         body = request.get_json()
         name = body.get("name")
-        new_tourny = save_new_tournament(name, g.firebase_id)
-        return jsonify(new_tourny.to_json())
+        new_tourny_json = save_new_tournament(name, g.firebase_id)
+        return jsonify(new_tourny_json)
 
     def get(self):
-        tourneys = TournamentRepository.get_all_for_user(g.user)
-        return jsonify(tournaments=[tournament.to_json() for tournament in tourneys])
+        tourney_jsons = TournamentRepository.get_all_for_user(g.user)
+        return jsonify(tournaments=tourney_jsons)
 
 
 @requires_auth
@@ -29,8 +29,8 @@ class TournamentDetails(Resource):
     """Get info for specific tournament, by id."""
 
     def get(self, tournament_id):
-        tourny = TournamentRepository.get_by_id(tournament_id)
-        return jsonify(tourny.to_json())
+        tourny_json = TournamentRepository.get_by_id(tournament_id)
+        return jsonify(tourny_json)
 
 
 @requires_auth
@@ -41,8 +41,8 @@ class TournamentSearch(Resource):
         body = request.get_json()
         name = body.get("name")
         # TODO: Eventually search by short id code
-        results = TournamentRepository.search_by_name(name)
-        return jsonify(results=[result.to_json() for result in results])
+        results_jsons = TournamentRepository.search_by_name(name)
+        return jsonify(results=results_jsons)
 
 
 tournament_api.add_resource(Tournaments, "/tournaments")

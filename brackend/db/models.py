@@ -44,8 +44,8 @@ class Tournament(Base):
     users = association_proxy("user_tournaments", "user")
     brackets = relationship("Bracket", backref="tournaments")
 
-    def __init__(self, data):
-        super.__init__(self, data)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.owner = None
 
     def __repr__(self):
@@ -59,7 +59,7 @@ class Tournament(Base):
             "name": self.name,
             "id": self.id,
             "brackets": [b.to_json() for b in self.brackets],
-            "owner": hasattr(self, "owner") and self.owner.to_json()
+            "owner": self.owner and self.owner.to_json()
         }
 
 
