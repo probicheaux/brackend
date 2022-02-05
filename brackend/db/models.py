@@ -47,6 +47,7 @@ class Tournament(Base):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.owner = None
+        self.brackets = []
 
     def __repr__(self):
         return f"Tournament(id={self.id}, name={self.name})"

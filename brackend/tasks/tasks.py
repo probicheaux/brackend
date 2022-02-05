@@ -11,6 +11,7 @@ from brackend.db.models import (
 )
 from brackend.db.enums import UserRole
 from brackend.util import BrackendException
+from brackend.repositories.BracketRepository import BracketRepository
 
 redis_broker = RedisBroker(host="redis")
 dramatiq.set_broker(redis_broker)
@@ -18,8 +19,7 @@ dramatiq.set_broker(redis_broker)
 
 def save_new_tournament(name, firebase_id):
     engine = EngineGetter.get_or_create_engine()
-    with Session(engine) as session:
-        session.expire_on_commit = False
+    with Session(engine, expire_on_commit=False) as session:
         new_tourney = Tournament(name=name)
         user = get_user_by_uid(firebase_id)
         session.add(user)
@@ -35,7 +35,7 @@ def save_new_tournament(name, firebase_id):
         session.commit()
         current_app.logger.info("Users: %s", new_tourney.users)
         current_app.logger.info("Tournaments: %s", user.tournaments)
-        return new_tourney.to_json()
+        return new_tourney
 
 
 def save_new_user(username, firebase_id):

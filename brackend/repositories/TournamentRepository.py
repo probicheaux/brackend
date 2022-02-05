@@ -21,7 +21,7 @@ class TournamentRepository(ABC):
                 .where(UserTournament.user_id == user.id) \
                 .all()
 
-            return [tournament.to_json() for tournament in tournaments]
+            return tournaments
 
     @classmethod
     def get_by_id(cls, t_id):
@@ -42,7 +42,7 @@ class TournamentRepository(ABC):
 
             tournament.add_owner_info(owner)
 
-            return tournament.to_json()
+            return tournament
 
     @classmethod
     def search_by_name(cls, name, count=20):
@@ -53,5 +53,5 @@ class TournamentRepository(ABC):
                 .filter(Tournament.name.ilike(search))\
                 .limit(count)\
                 .all()
-            return [r.to_json() for r in results]
+            return results
 
