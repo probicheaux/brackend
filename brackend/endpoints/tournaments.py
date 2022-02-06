@@ -1,9 +1,9 @@
-from flask import Blueprint, jsonify, request, g
+from flask import Blueprint, g, jsonify, request
 from flask_restful import Api, Resource
 
+from brackend.repositories.TournamentRepository import TournamentRepository
 from brackend.tasks.auth import requires_auth
 from brackend.tasks.tasks import save_new_tournament
-from brackend.repositories.TournamentRepository import TournamentRepository
 
 tournament_bp = Blueprint("tournaments", __name__)
 tournament_api = Api(tournament_bp)
@@ -21,7 +21,7 @@ class Tournaments(Resource):
 
     def get(self):
         tourneys = TournamentRepository.get_all_for_user(g.user)
-        return jsonify(tournaments=[tournament.to_json() for tournament in tourneys])
+        return jsonify(tournaments=[t.to_json() for t in tourneys])
 
 
 @requires_auth
@@ -42,7 +42,7 @@ class TournamentSearch(Resource):
         name = body.get("name")
         # TODO: Eventually search by short id code
         results = TournamentRepository.search_by_name(name)
-        return jsonify(results=[result.to_json() for result in results])
+        return jsonify(results=[t.to_json() for t in results])
 
 
 tournament_api.add_resource(Tournaments, "/tournaments")

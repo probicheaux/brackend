@@ -18,8 +18,7 @@ dramatiq.set_broker(redis_broker)
 
 def save_new_tournament(name, firebase_id):
     engine = EngineGetter.get_or_create_engine()
-    with Session(engine) as session:
-        session.expire_on_commit = False
+    with Session(engine, expire_on_commit=False) as session:
         new_tourney = Tournament(name=name)
         user = get_user_by_uid(firebase_id)
         session.add(user)
