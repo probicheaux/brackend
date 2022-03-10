@@ -8,3 +8,4 @@
 **/.idea
 dist/*
 secrets.7z
+node_modules
