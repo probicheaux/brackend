@@ -75,10 +75,10 @@ def delete_tournament(tid):
     """
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
-        tournament = session.query(Tournament).where(Tournament.id == tid)
+        tournament = session.query(Tournament).where(Tournament.id == tid)[0]
         assert tournament is not None
         session.delete(tournament)
-        session.flush()
+        session.commit()
         return True
 
 

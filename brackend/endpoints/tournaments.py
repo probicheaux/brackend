@@ -1,9 +1,10 @@
+from brackend import delete_everything
 from flask import Blueprint, g, jsonify, request
 from flask_restful import Api, Resource
 
 from brackend.repositories.TournamentRepository import TournamentRepository
 from brackend.tasks.auth import requires_auth
-from brackend.tasks.tasks import save_new_tournament
+from brackend.tasks.tasks import save_new_tournament, delete_tournament
 
 tournament_bp = Blueprint("tournaments", __name__)
 tournament_api = Api(tournament_bp)
@@ -18,6 +19,15 @@ class Tournaments(Resource):
         name = body.get("name")
         new_tourny = save_new_tournament(name, g.firebase_id)
         return jsonify(new_tourny.to_json())
+
+    def delete(self):
+        """
+        deleting here
+        """
+        body = request.get_json()
+        id = body.get("id")
+        good = delete_tournament(id)
+        return jsonify(good)
 
     def get(self):
         tourneys = TournamentRepository.get_all_for_user(g.user)
