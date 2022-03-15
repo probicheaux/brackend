@@ -20,15 +20,6 @@ class Tournaments(Resource):
         new_tourny = save_new_tournament(name, g.firebase_id)
         return jsonify(new_tourny.to_json())
 
-    def delete(self):
-        """
-        deleting here
-        """
-        body = request.get_json()
-        id = body.get("id")
-        good = delete_tournament(id)
-        return jsonify(good)
-
     def get(self):
         tourneys = TournamentRepository.get_all_for_user(g.user)
         return jsonify(tournaments=[t.to_json() for t in tourneys])
@@ -41,6 +32,10 @@ class TournamentDetails(Resource):
     def get(self, tournament_id):
         tourny = TournamentRepository.get_by_id(tournament_id)
         return jsonify(tourny.to_json())
+
+    def delete(self, tournament_id):
+        good = delete_tournament(tournament_id)
+        return jsonify(good)
 
 
 @requires_auth
