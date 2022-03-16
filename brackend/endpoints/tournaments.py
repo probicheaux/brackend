@@ -34,7 +34,7 @@ class TournamentDetails(Resource):
         return jsonify(tourny.to_json())
 
     def delete(self, tournament_id):
-        good = delete_tournament(tournament_id)
+        good = delete_tournament(tournament_id, g.firebase_id)
         return jsonify(good)
 
 

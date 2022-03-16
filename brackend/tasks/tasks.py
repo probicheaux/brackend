@@ -69,13 +69,19 @@ def get_tournament_ids():
         return [u.id for u in users]
 
 
-def delete_tournament(tid):
+def delete_tournament(tid, uid):
     """
     delete tournament from the database
     """
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
-        tournament = session.query(Tournament).where(Tournament.id == tid)[0]
+        tournament = (
+            session.query(Tournament)
+            .join(Tournament.user_tournaments)
+            .join(UserTournament.user)
+            .where(Tournament.id == tid)
+            .where(User.firebase_id == uid)
+        )[0]
         assert tournament is not None
         session.delete(tournament)
         session.commit()
