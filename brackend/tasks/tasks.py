@@ -81,6 +81,7 @@ def delete_tournament(tid, uid):
             .join(UserTournament.user)
             .where(Tournament.id == tid)
             .where(User.firebase_id == uid)
+            .where(UserRole.organizer == UserTournament.role)
         )[0]
         assert tournament is not None
         session.delete(tournament)
