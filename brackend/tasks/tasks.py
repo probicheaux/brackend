@@ -21,15 +21,11 @@ def save_new_tournament(data, firebase_id):
     with Session(engine) as session:
         session.expire_on_commit = False
         new_tourney = Tournament(
-            name=data.name,
+            name=data.get("name"),
             desription=data.get("description"),
             start_date=data.get("start_date"),
             end_date=data.get("end_date"),
         )
-        user = get_user_by_uid(firebase_id)
-        session.add(user)
-        if user is None:
-            raise BrackendException("Somehow a nonexistent user is trying to save a tournament")
         session.add(new_tourney)
         session.flush()
         assert new_tourney.id is not None
@@ -54,6 +50,9 @@ def save_new_user(username, firebase_id):
 
 
 def get_user_ids():
+    """
+    returns a list of all users in the database
+    """
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
         users = session.query(User).all()
@@ -61,10 +60,33 @@ def get_user_ids():
 
 
 def get_tournament_ids():
+    """
+    returns a list of all tournaments in the database
+    """
     engine = EngineGetter.get_or_create_engine()
     with Session(engine) as session:
         users = session.query(Tournament).all()
         return [u.id for u in users]
+
+
+def delete_tournament(tid, uid):
+    """
+    delete tournament from the database
+    """
+    engine = EngineGetter.get_or_create_engine()
+    with Session(engine) as session:
+        tournament = (
+            session.query(Tournament)
+            .join(Tournament.user_tournaments)
+            .join(UserTournament.user)
+            .where(Tournament.id == tid)
+            .where(User.firebase_id == uid)
+            .where(UserRole.organizer == UserTournament.role)
+        ).one_or_none()
+        assert tournament is not None
+        session.delete(tournament)
+        session.commit()
+        return True
 
 
 def get_tournaments_by_uid(uid):

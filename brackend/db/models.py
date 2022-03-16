@@ -1,7 +1,18 @@
 """Module that defines/creates/holds ORMs for the database."""
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    create_engine,
+)
+
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import declarative_base, relationship, backref
@@ -42,6 +53,7 @@ class Tournament(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     date = Column(DateTime, default=datetime.now)
+    game = Column(String(255))
 
     # Submitted on creation
     start_date = Column(DateTime(timezone=True), nullable=True)
@@ -54,9 +66,10 @@ class Tournament(Base):
     users = association_proxy("user_tournaments", "user")
     brackets = relationship("Bracket", backref="tournaments")
 
-    def __init__(self, data):
-        super.__init__(self, data)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.owner = None
+        self.brackets = []
 
     def __repr__(self):
         return f"Tournament(id={self.id}, name={self.name})"
@@ -65,12 +78,14 @@ class Tournament(Base):
         self.owner = data
 
     def to_json(self):
+        if not hasattr(self, "owner"):
+            self.owner = None
         return {
             "name": self.name,
             "id": self.id,
             "description": self.description,
             "brackets": [b.to_json() for b in self.brackets],
-            "owner": hasattr(self, "owner") and self.owner.to_json()
+            "owner": self.owner and self.owner.to_json(),
         }
 
 
@@ -82,8 +97,12 @@ class UserTournament(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     tournament_id = Column(Integer, ForeignKey("tournaments.id"))
     bracket_id = Column(Integer, ForeignKey("brackets.id"))
-    user = relationship("User", backref=backref("user_tournaments", cascade="all, delete-orphan"))
-    tournament = relationship("Tournament", backref=backref("user_tournaments", cascade="all, delete-orphan"))
+    user = relationship(
+        "User", backref=backref("user_tournaments", cascade="all, delete-orphan")
+    )
+    tournament = relationship(
+        "Tournament", backref=backref("user_tournaments", cascade="all, delete-orphan")
+    )
     role = Column(ENUM(UserRole), nullable=False)
 
 
@@ -98,7 +117,12 @@ class Bracket(Base):
     rounds = relationship("Round", backref="brackets")
 
     def to_json(self, participants=None):
-        return {"id": self.id, "name": self.name, "tournament": self.tournament, "participants": participants}
+        return {
+            "id": self.id,
+            "name": self.name,
+            "tournament": self.tournament,
+            "participants": participants,
+        }
 
 
 class Round(Base):
@@ -124,8 +148,12 @@ class MatchUser(Base):
     match = Column(Integer, ForeignKey("matches.id"))
     user = Column(Integer, ForeignKey("users.id"))
     score = Column(Integer)
-    user_ = relationship("User", backref=backref("match_users", cascade="all, delete-orphan"))
-    match_ = relationship("Match", backref=backref("match_users", cascade="all, delete-orphan"))
+    user_ = relationship(
+        "User", backref=backref("match_users", cascade="all, delete-orphan")
+    )
+    match_ = relationship(
+        "Match", backref=backref("match_users", cascade="all, delete-orphan")
+    )
 
 
 class EngineGetter:

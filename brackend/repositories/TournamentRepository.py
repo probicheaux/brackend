@@ -55,4 +55,3 @@ class TournamentRepository(ABC):
                 .all()
             return results
 
-
