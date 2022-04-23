@@ -16,8 +16,7 @@ class Tournaments(Resource):
 
     def post(self):
         body = request.get_json()
-        name = body.get("name")
-        new_tourny = save_new_tournament(name, g.firebase_id)
+        new_tourny = save_new_tournament(body, g.firebase_id)
         return jsonify(new_tourny.to_json())
 
     def get(self):

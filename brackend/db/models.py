@@ -9,8 +9,10 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Text,
     create_engine,
 )
+
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import declarative_base, relationship, backref
@@ -49,8 +51,18 @@ class Tournament(Base):
     __tablename__ = "tournaments"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
     date = Column(DateTime, default=datetime.now)
     game = Column(String(255))
+
+    # Submitted on creation
+    start_date = Column(DateTime(timezone=True), nullable=True)
+    end_date = Column(DateTime(timezone=True))
+
+    # Updated when actually starting/ending a tournament
+    started_at = Column(DateTime(timezone=True), nullable=True)
+    ended_at = Column(DateTime(timezone=True))
+
     users = association_proxy("user_tournaments", "user")
     brackets = relationship("Bracket", backref="tournaments")
 
@@ -71,6 +83,7 @@ class Tournament(Base):
         return {
             "name": self.name,
             "id": self.id,
+            "description": self.description,
             "brackets": [b.to_json() for b in self.brackets],
             "owner": self.owner and self.owner.to_json(),
         }
@@ -99,6 +112,7 @@ class Bracket(Base):
     __tablename__ = "brackets"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
     tournament = Column(Integer, ForeignKey("tournaments.id"))
     rounds = relationship("Round", backref="brackets")
 

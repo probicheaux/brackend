@@ -21,11 +21,7 @@ class Brackets(Resource):
         tournament = TournamentRepository.get_by_id(tournament_id)
         if g.user.id != tournament.owner.id:
             raise BrackendException("Tournament does not belong to user")
-        data = {
-            "tournament": body.get("tournament"),
-            "name": body.get("name"),
-        }
-        new_bracket = BracketRepository.create(data)
+        new_bracket = BracketRepository.create(body)
         return jsonify(new_bracket.to_json())
 
 
